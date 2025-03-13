@@ -10,7 +10,8 @@ const HeaderContainer = styled.header`
   justify-content: space-between;
   align-items: center;
   background-color: #1B1C1D;
-  padding: 8px 10px;
+  padding: 0px 10px;
+  height: 50px;
 `;
 
 const LeftSection = styled.div`
