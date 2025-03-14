@@ -19,7 +19,7 @@ const Container = styled(Box)`
 
 const Sidebar = styled(Box)`
   width: 26%;
-  background-color: #212121;
+  background-color: #101011;
   color: white;
   padding: 16px;
 
