@@ -42,7 +42,7 @@ const RightSection = styled(Box)`
 const GraphContainer = styled(Box)`
   flex-grow: 1;
   background-color: #101011;
-  padding: 16px;
+  
 
   @media (max-width: 1000px) {
     order: 1;

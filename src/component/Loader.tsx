@@ -11,27 +11,26 @@ const LoaderContainer = styled.div`
   position: absolute;
   height: 100vh;
   width: 100vw;
-  background-color: #1b1c1d;
+  background-color: transparent;
 `;
 
 const Propeller = styled(motion.img)`
-  width: 80px; 
-  height: 80px;
+  width: 150px; 
+  height: 150px;
 `;
 
 const LoadingText = styled.p`
   color: white;
-  font-size: 16px;
-  font-weight: bold;
-  margin-top: 16px;
+  font-size: 34px;
+  padding:0px;
+  margin:20px;
 `;
 
 const LoadingBarContainer = styled.div`
-  width: 160px;
+  width: 220px;
   height: 6px;
   background-color: rgba(255, 255, 255, 0.2); 
   overflow: hidden;
-  margin-top: 12px;
   border-radius: 4px;
 `;
 
