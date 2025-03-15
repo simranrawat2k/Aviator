@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import styled from "styled-components";
-import moveImage from "../assets/move.png"; 
+import moveImage from "../assets/wheel.png";
 
 const LoaderContainer = styled.div`
   display: flex;

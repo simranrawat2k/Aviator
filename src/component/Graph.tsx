@@ -6,6 +6,7 @@ import airplane from "../assets/airplane.png";
 import Loader from "./Loader";
 import FlyingPlane from "./Graph/FlyingPlane";
 import AxisDots from "./Graph/AxisDots";
+import Points from "./Graph/Points";
 
 
 const GraphBox = styled(Box)<{ loading: boolean }>`
@@ -64,7 +65,7 @@ const Airplane = styled.img`
 `;
 
 const Graph = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 3000); // Simulating load time
@@ -77,6 +78,9 @@ const Graph = () => {
         {loading ? <Loader /> : <RotatingWheel isRotating={!loading} />}
         {loading && <Airplane src={airplane} alt="Airplane" />}
         {!loading && <AxisDots/>}
+        {/* {!loading && <FlyingPlane/>} */}
+        {!loading && <Points/>}
+
       </GraphBox>
     </Box>
   );

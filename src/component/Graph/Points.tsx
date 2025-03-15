@@ -11,12 +11,39 @@ const PointsWrapper = styled.div`
   height: 100%;
 `;
 
+const PointsContainer = styled.div<{ endTime: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  text-align: center;
+
+  /* Initial blue background */
+  background: radial-gradient(circle, rgba(52, 180, 255, 0.3) 0%, rgba(26, 59, 85, 0) 60%);
+  
+  /* Transition for background color */
+  transition: background 5s ease-in-out; /* Increased duration to 5s */
+
+  /* Use useEffect to trigger background color change */
+  ${({ endTime }) => 
+    endTime && `
+      background: radial-gradient(circle, rgba(137, 59, 233, 0.3) 0%, rgba(26, 59, 85, 0) 60%); /* Purple */
+  `}
+`;
+
+
 const PointsText = styled.div<{ endTime: boolean }>`
   font-size: 95px;
   line-height: 40px;
   font-family: "Inter", sans-serif;
   color: ${({ endTime }) => (endTime ? "#F7001F" : "white")};
   font-weight: bold;
+  padding: 10px 20px;
 `;
 
 const Message = styled.div`
@@ -44,8 +71,8 @@ const Points = () => {
     // Stop after 20 seconds
     const timeout = setTimeout(() => {
       clearInterval(timer);
-      setEndTime(true); // Set endTime to true after the time ends
-    }, 2000);
+      setEndTime(true); // Set endTime to true after 10 seconds to trigger color change
+    }, 20000); // 10 seconds
 
     return () => {
       clearInterval(timer);
@@ -55,8 +82,10 @@ const Points = () => {
 
   return (
     <PointsWrapper>
-      {endTime && <Message>FLEW AWAY!</Message>} {/* Display the message when time ends */}
-      <PointsText endTime={endTime}>{points.toFixed(2)}x</PointsText> {/* Format number to 2 decimal places */}
+      <PointsContainer endTime={endTime}>
+        {endTime && <Message>FLEW AWAY!</Message>} {/* Display the message when time ends */}
+        <PointsText endTime={endTime}>{points.toFixed(2)}x</PointsText> {/* Format number to 2 decimal places */}
+      </PointsContainer>
     </PointsWrapper>
   );
 };
