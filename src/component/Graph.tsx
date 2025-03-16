@@ -7,6 +7,7 @@ import Loader from "./Loader";
 import FlyingPlane from "./Graph/FlyingPlane";
 import AxisDots from "./Graph/AxisDots";
 import Points from "./Graph/Points";
+import RoundHistory from "./RoundHistory";
 
 
 const GraphBox = styled(Box)<{ loading: boolean }>`
@@ -15,8 +16,8 @@ const GraphBox = styled(Box)<{ loading: boolean }>`
   background-position: -1380px -967px;
   border: 2px solid #2c2d30;
   width: 99%;
-  height: 95%;
-  margin: 12px 5px 5px 0px;
+  height: 90%;
+  margin: 5px 5px 5px 0px;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -74,6 +75,7 @@ const Graph = () => {
 
   return (
     <Box sx={{ background: "#101011", width: "100%", height: "100%" }}>
+      <RoundHistory/>
       <GraphBox loading={loading}>
         {loading ? <Loader /> : <RotatingWheel isRotating={!loading} />}
         {loading && <Airplane src={airplane} alt="Airplane" />}

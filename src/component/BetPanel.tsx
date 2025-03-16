@@ -188,6 +188,7 @@ const BetPlane: React.FC = () => {
   const [betValue, setBetValue] = useState(10.0);
   const [activeTab, setActiveTab] = useState(0);
   const [activeTabTwo, setActiveTabTwo] = useState(0);
+  const [isWaiting, setIsWaiting] = useState(false);
 
   const handleBetChange = (amount: number) => {
     setBetValue(amount);

@@ -72,7 +72,7 @@ const Points = () => {
     const timeout = setTimeout(() => {
       clearInterval(timer);
       setEndTime(true); // Set endTime to true after 10 seconds to trigger color change
-    }, 20000); // 10 seconds
+    }, 10000); 
 
     return () => {
       clearInterval(timer);
