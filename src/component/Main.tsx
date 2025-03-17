@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Users from "./Users";
 import Graph from "./Graph";
 import BetPlane from "./BetPanel";
@@ -67,6 +67,25 @@ const BetPanel = styled(Box)`
 `;
 
 const Main: React.FC = () => {
+  const [roundStart, setRoundStart] = useState(true);
+  const [isPlaneOff, setIsPlaneOff] = useState(false);
+  
+  useEffect(() => {
+    const roundTimer = setTimeout(() => {
+      setRoundStart(false);
+  
+      // Start another timer when roundStart becomes true
+      const planeTimer = setTimeout(() => {
+        setIsPlaneOff(true);
+      }, 10000);
+  
+      return () => clearTimeout(planeTimer); // Cleanup plane timer on unmount
+    }, 3000);
+  
+    return () => clearTimeout(roundTimer); // Cleanup round timer on unmount
+  }, []);
+  
+
   return (
     <Container>
       <Sidebar>
@@ -74,10 +93,10 @@ const Main: React.FC = () => {
       </Sidebar>
       <RightSection>
         <GraphContainer>
-          <Graph />
+          <Graph roundStart={roundStart} isPlaneOff = {isPlaneOff}/>
         </GraphContainer>
         <BetPanel>
-          <BetPlane />
+          <BetPlane roundStart={roundStart} isPlaneOff = {isPlaneOff}/>
         </BetPanel>
       </RightSection>
     </Container>

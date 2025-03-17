@@ -9,7 +9,6 @@ import AxisDots from "./Graph/AxisDots";
 import Points from "./Graph/Points";
 import RoundHistory from "./RoundHistory";
 
-
 const GraphBox = styled(Box)<{ loading: boolean }>`
   background: url(${wheel}) no-repeat center;
   background-size: 2760px 2760px;
@@ -65,24 +64,28 @@ const Airplane = styled.img`
   transform: rotate(10deg);
 `;
 
-const Graph = () => {
-  const [loading, setLoading] = useState(false);
+interface GraphProps {
+  roundStart: boolean;
+  isPlaneOff: boolean;
+}
 
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 3000); // Simulating load time
-    return () => clearTimeout(timer);
-  }, []);
+const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+  // const [loading, setLoading] = useState(true);
+  // console.log(roundStart, isPlaneOff)
+
+  // useEffect(() => {
+  //   const timer = setTimeout(() => setLoading(true), 3000); // Simulating load time
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   return (
     <Box sx={{ background: "#101011", width: "100%", height: "100%" }}>
-      <RoundHistory/>
+      <RoundHistory />
       <GraphBox loading={loading}>
         {loading ? <Loader /> : <RotatingWheel isRotating={!loading} />}
         {loading && <Airplane src={airplane} alt="Airplane" />}
-        {!loading && <AxisDots/>}
-        {/* {!loading && <FlyingPlane/>} */}
-        {!loading && <Points/>}
-
+        {!loading && <AxisDots />}
+        {!loading && <Points isPlaneOff={isPlaneOff} />}
       </GraphBox>
     </Box>
   );

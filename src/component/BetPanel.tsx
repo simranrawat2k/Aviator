@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import styled from "styled-components";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const BetPanelContainer = styled(Box)`
   display: flex;
@@ -41,7 +44,7 @@ const BetOneInsideContainer = styled(Box)`
   display: flex;
   justify-content: center;
   align-items: center;
-  gap:20px;
+  gap: 20px;
 `;
 
 const LeftSection = styled(Box)`
@@ -135,9 +138,30 @@ const RightSection = styled(Box)`
   height: 87px;
   border-radius: 20px;
   min-width: 100px;
+  cursor: pointer;
+`;
+
+const RightCashOut = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(182, 123, 13);
+  border: 1px solid rgb(176, 176, 176);
+  width: 230px;
+  padding: 0px 12px;
+  height: 87px;
+  border-radius: 20px;
+  min-width: 100px;
+  cursor: pointer;
 `;
 
 const BetText = styled.div`
+  color: white;
+  font-size: 23px;
+`;
+
+const CashText = styled.div`
   color: white;
   font-size: 23px;
 `;
@@ -148,6 +172,55 @@ const BetAmountText = styled(Typography)`
     font-size: 23px;
     margin-top: 4px;
   }
+`;
+
+const CashoutAmount = styled(Typography)`
+  && {
+    color: white;
+    font-size: 23px;
+    margin-top: 4px;
+  }
+`;
+
+const RightCancel = styled.div`
+  background-color: #cb011a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(176, 176, 176);
+  width: 230px;
+  padding: 0px 12px;
+  height: 87px;
+  border-radius: 20px;
+  min-width: 100px;
+  cursor: pointer;
+`;
+
+const RightWaiting = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const CancelText = styled.div`
+  color: white;
+  font-size: 23px;
+`;
+
+const WaitingCancelText = styled.div`
+  color: white;
+  font-size: 20px;
+  background-color: #cb011a;
+  width: 200px;
+  height: 47px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 20px;
+  cursor: pointer;
 `;
 
 const TabsContainer = styled.div`
@@ -184,114 +257,143 @@ const ActiveTabIndicator = styled.div<{ position: number }>`
   z-index: 1;
 `;
 
-const BetPlane: React.FC = () => {
-  const [betValue, setBetValue] = useState(10.0);
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeTabTwo, setActiveTabTwo] = useState(0);
-  const [isWaiting, setIsWaiting] = useState(false);
+interface GraphProps {
+  roundStart: boolean;
+  isPlaneOff: boolean;
+}
 
-  const handleBetChange = (amount: number) => {
-    setBetValue(amount);
+const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+  const [bets, setBets] = useState([
+    { betValue: 10.0, isBetPlaced: false, betAfterLoading: false, cashoutValue: 10.0 },
+    { betValue: 10.0, isBetPlaced: false, betAfterLoading: false, cashoutValue: 10.0 },
+  ]);
+  const cashoutIntervals = useRef<(NodeJS.Timeout | null)[]>([null, null]);
+ const [activeTab, setActiveTab] = useState(0);
+
+  const handleBetClick = (index: number) => {
+    setBets((prev) =>
+      prev.map((bet, i) =>
+        i === index
+          ? !loading
+            ? { ...bet, betAfterLoading: true }
+            : { ...bet, isBetPlaced: true, cashoutValue: bet.betValue }
+          : bet
+      )
+    );
   };
+
+  const handleCancelClick = (index: number) => {
+    clearInterval(cashoutIntervals.current[index]!);
+    setBets((prev) =>
+      prev.map((bet, i) =>
+        i === index ? { ...bet, betValue: 10.0, isBetPlaced: false, betAfterLoading: false } : bet
+      )
+    );
+  };
+
+  const handleCashOutClick = (index: number) => {
+    toast.success(`You won ${bets[index].cashoutValue.toFixed(2)} INR 🎉`);
+    clearInterval(cashoutIntervals.current[index]!);
+    setBets((prev) => prev.map((bet, i) => (i === index ? { ...bet, isBetPlaced: false } : bet)));
+  };
+
+  useEffect(() => {
+    bets.forEach((bet, index) => {
+      if (!loading && !isPlaneOff && bet.isBetPlaced) {
+        cashoutIntervals.current[index] = setInterval(() => {
+          setBets((prev) =>
+            prev.map((b, i) => (i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b))
+          );
+        }, 100);
+      }
+    });
+    return () => cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
+  }, [loading, isPlaneOff, bets]);
+
+  useEffect(() => {
+    if (isPlaneOff) {
+      cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
+      bets.forEach((bet, index) => {
+        if (bet.isBetPlaced) toast.error(`Bet ${index + 1} Lost ❌`);
+      });
+    }
+  }, [isPlaneOff]);
 
   return (
     <BetPanelContainer>
-      {/* Bet One */}
-      <BetSection>
-        <BetOneContainer>
-          {/* Left Side - Bet Controls */}
+      {bets.map((bet, index) => (
+        <BetSection key={index}>
+          <BetOneContainer>
           <TabsContainer>
-            <ActiveTabIndicator position={activeTab} />
-            <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>
-              Bet
-            </Tab>
-            <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>
-              Auto
-            </Tab>
-          </TabsContainer>
-          {activeTab === 0 ? <BetOneInsideContainer>
-          <LeftSection>
-            <BetControls>
-              <PlusMinusButton
-                onClick={() => setBetValue((prev) => Math.max(1, prev - 1))}
+        <ActiveTabIndicator position={activeTab} />
+        <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>Bet</Tab>
+        <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>Auto</Tab>
+      </TabsContainer>
+            <BetOneInsideContainer>
+              <LeftSection>
+                <BetControls>
+                  <PlusMinusButton onClick={() => setBets((prev) => prev.map((b, i) => i === index ? { ...b, betValue: Math.max(1, b.betValue - 1) } : b))}>
+                    −
+                  </PlusMinusButton>
+                  <BetValue>{bet.betValue.toFixed(2)}</BetValue>
+                  <PlusMinusButton onClick={() => setBets((prev) => prev.map((b, i) => i === index ? { ...b, betValue: b.betValue + 1 } : b))}>
+                    +
+                  </PlusMinusButton>
+                </BetControls>
+                <BetAmountButtons>
+                  {[100, 500, 1000, 5000].map((amount) => (
+                    <AmountButton key={amount} onClick={() => 
+                      setBets((prev) => prev.map((b, i) => 
+                        i === index ? { ...b, betValue: amount } : b
+                      ))
+                    }>
+                      {amount}
+                    </AmountButton>
+                    
+                  ))}
+                </BetAmountButtons>
+              </LeftSection>
+
+              <div
+                onClick={
+                  bet.betAfterLoading
+                    ? () => handleCancelClick(index)
+                    : bet.isBetPlaced
+                    ? loading === false && isPlaneOff === false
+                      ? () => handleCashOutClick(index)
+                      : () => handleCancelClick(index)
+                    : () => handleBetClick(index)
+                }
               >
-                −
-              </PlusMinusButton>
-              <BetValue>{betValue.toFixed(2)}</BetValue>
-              <PlusMinusButton onClick={() => setBetValue((prev) => prev + 1)}>
-                +
-              </PlusMinusButton>
-            </BetControls>
-            <BetAmountButtons>
-              {[100, 200, 500, 1000].map((amount) => (
-                <AmountButton
-                  key={amount}
-                  onClick={() => handleBetChange(amount)}
-                >
-                  {amount.toFixed(2)}
-                </AmountButton>
-              ))}
-            </BetAmountButtons>
-          </LeftSection>
-
-          {/* Right Side - Bet Button */}
-          <RightSection>
-            <BetText>BET</BetText>
-            <BetAmountText>{betValue.toFixed(2)} INR</BetAmountText>
-          </RightSection>
-          </BetOneInsideContainer> : <p>Auto</p>}
-          
-        </BetOneContainer>
-      </BetSection>
-
-      <BetSection>
-        <BetOneContainer>
-          {/* Left Side - Bet Controls */}
-          <TabsContainer>
-            <ActiveTabIndicator position={activeTabTwo} />
-            <Tab active={activeTabTwo === 0} onClick={() => setActiveTabTwo(0)}>
-              Bet
-            </Tab>
-            <Tab active={activeTabTwo === 1} onClick={() => setActiveTabTwo(1)}>
-              Auto
-            </Tab>
-          </TabsContainer>
-          {activeTabTwo === 0 ? <BetOneInsideContainer>
-          <LeftSection>
-            <BetControls>
-              <PlusMinusButton
-                onClick={() => setBetValue((prev) => Math.max(1, prev - 1))}
-              >
-                −
-              </PlusMinusButton>
-              <BetValue>{betValue.toFixed(2)}</BetValue>
-              <PlusMinusButton onClick={() => setBetValue((prev) => prev + 1)}>
-                +
-              </PlusMinusButton>
-            </BetControls>
-            <BetAmountButtons>
-              {[100, 200, 500, 1000].map((amount) => (
-                <AmountButton
-                  key={amount}
-                  onClick={() => handleBetChange(amount)}
-                >
-                  {amount.toFixed(2)}
-                </AmountButton>
-              ))}
-            </BetAmountButtons>
-          </LeftSection>
-
-          {/* Right Side - Bet Button */}
-          <RightSection>
-            <BetText>BET</BetText>
-            <BetAmountText>{betValue.toFixed(2)} INR</BetAmountText>
-          </RightSection>
-          </BetOneInsideContainer> : <p>Auto</p>}
-          
-        </BetOneContainer>
-      </BetSection>
+                {bet.betAfterLoading ? (
+                  <RightWaiting>
+                    <p style={{ color: "#A6A2AD" }}>Waiting for next round</p>
+                    <WaitingCancelText>CANCEL</WaitingCancelText>
+                  </RightWaiting>
+                ) : loading === false && isPlaneOff === false && bet.isBetPlaced ? (
+                  <RightCashOut>
+                    <CashText>CASH OUT</CashText>
+                    <CashoutAmount>{bet.cashoutValue.toFixed(2)} INR</CashoutAmount>
+                  </RightCashOut>
+                ) : bet.isBetPlaced ? (
+                  <RightCancel>
+                    <CancelText>CANCEL</CancelText>
+                  </RightCancel>
+                ) : (
+                  <RightSection>
+                    <BetText>BET</BetText>
+                    <BetAmountText>{bet.betValue.toFixed(2)} INR</BetAmountText>
+                  </RightSection>
+                )}
+              </div>
+            </BetOneInsideContainer>
+          </BetOneContainer>
+        </BetSection>
+      ))}
+      <ToastContainer position="top-right" autoClose={3000} />
     </BetPanelContainer>
   );
 };
+
 
 export default BetPlane;

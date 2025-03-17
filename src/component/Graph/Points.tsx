@@ -27,15 +27,13 @@ const PointsContainer = styled.div<{ endTime: boolean }>`
   background: radial-gradient(circle, rgba(52, 180, 255, 0.3) 0%, rgba(26, 59, 85, 0) 60%);
   
   /* Transition for background color */
-  transition: background 5s ease-in-out; /* Increased duration to 5s */
+  transition: background 5s ease-in-out;
 
-  /* Use useEffect to trigger background color change */
-  ${({ endTime }) => 
-    endTime && `
-      background: radial-gradient(circle, rgba(137, 59, 233, 0.3) 0%, rgba(26, 59, 85, 0) 60%); /* Purple */
-  `}
+  /* Change background when endTime is true */
+  ${({ endTime }) =>
+    endTime &&
+    `background: radial-gradient(circle, rgba(137, 59, 233, 0.3) 0%, rgba(26, 59, 85, 0) 60%);`}
 `;
-
 
 const PointsText = styled.div<{ endTime: boolean }>`
   font-size: 95px;
@@ -51,40 +49,38 @@ const Message = styled.div`
   font-family: "Inter", sans-serif;
   color: white;
   margin-bottom: 30px;
-  font-weight: normal; /* Remove bold */
+  font-weight: normal;
 `;
 
-const Points = () => {
-  const [points, setPoints] = useState(1.00);
+
+interface PointsProps {
+  isPlaneOff: boolean; // Ensure this is defined
+}
+
+const Points: React.FC<PointsProps> = ({ isPlaneOff }) => {
+  const [points, setPoints] = useState(1.0);
   const [endTime, setEndTime] = useState(false);
 
   useEffect(() => {
+    if (isPlaneOff) {
+      setEndTime(true); // Stop when stopTimer is true
+      return;
+    }
+
+    setPoints(1.0); // Reset to 1.00 when starting a new round
+
     const timer = setInterval(() => {
-      setPoints((prevPoints) => {
-        if (prevPoints < 10.00) {
-          return Math.min(prevPoints + 0.01, 10.00); // Ensure it doesn't go above 10
-        }
-        return prevPoints;
-      });
+      setPoints((prevPoints) => Math.min(prevPoints + 0.01, 10.0));
     }, 100);
 
-    // Stop after 20 seconds
-    const timeout = setTimeout(() => {
-      clearInterval(timer);
-      setEndTime(true); // Set endTime to true after 10 seconds to trigger color change
-    }, 10000); 
-
-    return () => {
-      clearInterval(timer);
-      clearTimeout(timeout);
-    };
-  }, []);
+    return () => clearInterval(timer);
+  }, [isPlaneOff]);
 
   return (
     <PointsWrapper>
       <PointsContainer endTime={endTime}>
-        {endTime && <Message>FLEW AWAY!</Message>} {/* Display the message when time ends */}
-        <PointsText endTime={endTime}>{points.toFixed(2)}x</PointsText> {/* Format number to 2 decimal places */}
+        {endTime && <Message>FLEW AWAY!</Message>}
+        <PointsText endTime={endTime}>{points.toFixed(2)}x</PointsText>
       </PointsContainer>
     </PointsWrapper>
   );
