@@ -80,7 +80,7 @@ const Main: React.FC = () => {
       }, 10000);
   
       return () => clearTimeout(planeTimer); // Cleanup plane timer on unmount
-    }, 3000);
+    }, 1000);
   
     return () => clearTimeout(roundTimer); // Cleanup round timer on unmount
   }, []);

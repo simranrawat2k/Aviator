@@ -1,24 +1,21 @@
 import { useEffect, useState } from "react";
-import aviatorSound from "../assets/aviator-sound.mp3"; // Import MP3 file
+import aviatorSound from "../assets/aviator-sound.mp3"; 
 
 const AudioPlayer: React.FC = () => {
   const [isAudioAllowed, setIsAudioAllowed] = useState(false);
 
   useEffect(() => {
     const audio = new Audio(aviatorSound);
-    audio.loop = true; // Keep playing continuously
+    audio.loop = true; 
 
-    // Function to start audio on first user click
     const enableAudioOnClick = () => {
       audio.play().catch((err) => console.log("Autoplay blocked:", err));
-      setIsAudioAllowed(true); // Mark that audio has started
-      document.removeEventListener("click", enableAudioOnClick); // Remove listener after first click
+      setIsAudioAllowed(true); 
+      document.removeEventListener("click", enableAudioOnClick);
     };
 
-    // Listen for first user click
     document.addEventListener("click", enableAudioOnClick);
 
-    // Stop audio when the tab/window is closed or refreshed
     const stopAudio = () => {
       audio.pause();
       audio.currentTime = 0;
@@ -26,13 +23,13 @@ const AudioPlayer: React.FC = () => {
     window.addEventListener("beforeunload", stopAudio);
 
     return () => {
-      stopAudio(); // Cleanup
+      stopAudio(); 
       window.removeEventListener("beforeunload", stopAudio);
       document.removeEventListener("click", enableAudioOnClick);
     };
   }, []);
 
-  return null; // No UI needed
+  return null; 
 };
 
 export default AudioPlayer;

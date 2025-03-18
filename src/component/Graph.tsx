@@ -70,13 +70,6 @@ interface GraphProps {
 }
 
 const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
-  // const [loading, setLoading] = useState(true);
-  // console.log(roundStart, isPlaneOff)
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => setLoading(true), 3000); // Simulating load time
-  //   return () => clearTimeout(timer);
-  // }, []);
 
   return (
     <Box sx={{ background: "#101011", width: "100%", height: "100%" }}>
@@ -85,6 +78,7 @@ const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
         {loading ? <Loader /> : <RotatingWheel isRotating={!loading} />}
         {loading && <Airplane src={airplane} alt="Airplane" />}
         {!loading && <AxisDots />}
+        {!loading && <FlyingPlane />}
         {!loading && <Points isPlaneOff={isPlaneOff} />}
       </GraphBox>
     </Box>
