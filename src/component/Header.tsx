@@ -4,6 +4,8 @@ import aviatorLogo from "../assets/aviator-logo.cafbd29233306bf7.svg"
 import MenuIcon from "@mui/icons-material/Menu";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useBalance } from "../context/BalanceContext";
+
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -90,6 +92,7 @@ const Balance = styled.span`
 `;
 
 const Header: React.FC = () => {
+  const { balance } = useBalance();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   return (
@@ -97,13 +100,13 @@ const Header: React.FC = () => {
       <LeftSection>
         <Logo src={aviatorLogo} alt="Aviator Logo" />
         <HowToPlayButton>
-          <HelpOutlineOutlinedIcon style={{ fontSize: "18px" }}/>
+          <HelpOutlineOutlinedIcon style={{ fontSize: "18px" }} />
           {!isMobile && "How to Play?"}
         </HowToPlayButton>
       </LeftSection>
       <RightSection>
         <BalanceContainer>
-          <Balance>0.00</Balance>
+          <Balance>{balance.toFixed(2)}</Balance>
           <span>INR</span>
         </BalanceContainer>
         <Separator />

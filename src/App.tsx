@@ -5,15 +5,16 @@ import Graph from "./component/Graph";
 import Main from "./component/Main";
 import MovingDots from "./component/Demo";
 import AudioPlayer from "./component/AudioPlayer";
+import { BalanceProvider } from "./context/BalanceContext";
 
 function App() {
-
-
   return (
     <div>
-      <AudioPlayer />
-      <Header />
-      <Main/>
+      <BalanceProvider>
+        <AudioPlayer />
+        <Header />
+        <Main />
+      </BalanceProvider>
     </div>
   );
 }
