@@ -42,7 +42,6 @@ const RightSection = styled(Box)`
 const GraphContainer = styled(Box)`
   flex-grow: 1;
   background-color: #101011;
-  
 
   @media (max-width: 1000px) {
     order: 1;
@@ -69,22 +68,42 @@ const BetPanel = styled(Box)`
 const Main: React.FC = () => {
   const [roundStart, setRoundStart] = useState(true);
   const [isPlaneOff, setIsPlaneOff] = useState(false);
-  
+
   useEffect(() => {
-    const roundTimer = setTimeout(() => {
-      setRoundStart(false);
-  
-      // Start another timer when roundStart becomes true
-      const planeTimer = setTimeout(() => {
-        setIsPlaneOff(true);
-      }, 10000);
-  
-      return () => clearTimeout(planeTimer); // Cleanup plane timer on unmount
-    }, 1000);
-  
-    return () => clearTimeout(roundTimer); // Cleanup round timer on unmount
+    let roundTimer: NodeJS.Timeout;
+    let planeTimer: NodeJS.Timeout;
+    let restartTimer: NodeJS.Timeout;
+
+    const startRoundCycle = () => {
+      setRoundStart(true);
+      setIsPlaneOff(false);
+
+      roundTimer = setTimeout(() => {
+        setRoundStart(false);
+
+        // Generate a random float between 0.0 and 10.0 seconds
+        // write 20 to generate points between 0.00 to 3.00
+        const randomFlyOffTime = Math.random() * 10;
+        console.log(`Plane will fly off in: ${randomFlyOffTime.toFixed(1)} seconds`);
+
+        planeTimer = setTimeout(() => {
+          setIsPlaneOff(true);
+
+          restartTimer = setTimeout(() => {
+            startRoundCycle();
+          }, 6000); // Restart cycle
+        }, randomFlyOffTime * 1000); // Convert to milliseconds
+      }, 3000); // Loader time
+    };
+
+    startRoundCycle(); // Start the cycle on mount
+
+    return () => {
+      clearTimeout(roundTimer);
+      clearTimeout(planeTimer);
+      clearTimeout(restartTimer);
+    };
   }, []);
-  
 
   return (
     <Container>
@@ -93,10 +112,10 @@ const Main: React.FC = () => {
       </Sidebar>
       <RightSection>
         <GraphContainer>
-          <Graph roundStart={roundStart} isPlaneOff = {isPlaneOff}/>
+          <Graph roundStart={roundStart} isPlaneOff={isPlaneOff} />
         </GraphContainer>
         <BetPanel>
-          <BetPlane roundStart={roundStart} isPlaneOff = {isPlaneOff}/>
+          <BetPlane roundStart={roundStart} isPlaneOff={isPlaneOff} />
         </BetPanel>
       </RightSection>
     </Container>

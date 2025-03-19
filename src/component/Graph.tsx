@@ -78,7 +78,7 @@ const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
         {loading ? <Loader /> : <RotatingWheel isRotating={!loading} />}
         {loading && <Airplane src={airplane} alt="Airplane" />}
         {!loading && <AxisDots />}
-        {!loading && <FlyingPlane />}
+        {!loading && <FlyingPlane isPlaneOff={isPlaneOff}/>}
         {!loading && <Points isPlaneOff={isPlaneOff} />}
       </GraphBox>
     </Box>

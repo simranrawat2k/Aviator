@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import KiteImage from "../../assets/airplane.png";
 
@@ -14,9 +14,17 @@ const PlaneComponent = styled.div`
   overflow: hidden;
 `;
 
-const FlyingKite: React.FC = () => {
+interface PointsProps {
+  isPlaneOff: boolean;
+}
+
+const FlyingKite: React.FC<PointsProps> = ({ isPlaneOff }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [lastKitePosition, setLastKitePosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const kiteSize = 150;
   const duration = 5000;
 
@@ -25,12 +33,10 @@ const FlyingKite: React.FC = () => {
       if (!canvasRef.current || !containerRef.current) return;
       const canvas = canvasRef.current;
       const container = containerRef.current;
-
       canvas.width = container.clientWidth;
       canvas.height = container.clientHeight;
     };
 
-    // Resize on mount and on window resize
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
     return () => window.removeEventListener("resize", resizeCanvas);
@@ -45,7 +51,7 @@ const FlyingKite: React.FC = () => {
     let startTime: number | null = null;
     let isMovingDown = false;
     let isReturning = false;
-    let kitePosition = { x: 0, y: canvas.height };
+    let kitePosition = lastKitePosition || { x: 0, y: canvas.height };
     let peakY = canvas.height * 0.2;
     let peakX = canvas.width * 0.7;
     let endX = canvas.width * 0.85;
@@ -64,88 +70,69 @@ const FlyingKite: React.FC = () => {
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        if (!isMovingDown && !isReturning) {
-          kitePosition.x = (1 - t) * 0 + t * peakX;
-          kitePosition.y = (1 - t) * canvas.height + t * peakY;
-          if (t >= 1) {
-            isMovingDown = true;
-            startTime = time;
-          }
-        } else if (isMovingDown && !isReturning) {
-          const downT = Math.min((time - startTime) / duration, 1);
-          kitePosition.x = (1 - downT) * peakX + downT * endX;
-          kitePosition.y = (1 - downT) * peakY + downT * endY;
-          if (downT >= 1) {
-            isReturning = true;
-            startTime = time;
-          }
-        } else if (isReturning) {
-          const returnT = Math.min((time - startTime) / duration, 1);
-          kitePosition.x = (1 - returnT) * endX + returnT * peakX;
-          kitePosition.y = (1 - returnT) * endY + returnT * peakY;
-          if (returnT >= 1) {
-            isMovingDown = true;
-            isReturning = false;
-            startTime = time;
+        if (isPlaneOff) {
+          kitePosition.x += 5; // Move off-screen to the right
+        } else {
+          if (!isMovingDown && !isReturning) {
+            kitePosition.x = (1 - t) * 0 + t * peakX;
+            kitePosition.y = (1 - t) * canvas.height + t * peakY;
+            if (t >= 1) {
+              isMovingDown = true;
+              startTime = time;
+            }
+          } else if (isMovingDown && !isReturning) {
+            const downT = Math.min((time - startTime) / duration, 1);
+            kitePosition.x = (1 - downT) * peakX + downT * endX;
+            kitePosition.y = (1 - downT) * peakY + downT * endY;
+            if (downT >= 1) {
+              isReturning = true;
+              startTime = time;
+            }
+          } else if (isReturning) {
+            const returnT = Math.min((time - startTime) / duration, 1);
+            kitePosition.x = (1 - returnT) * endX + returnT * peakX;
+            kitePosition.y = (1 - returnT) * endY + returnT * peakY;
+            if (returnT >= 1) {
+              isMovingDown = true;
+              isReturning = false;
+              startTime = time;
+            }
           }
         }
 
+        setLastKitePosition({ x: kitePosition.x, y: kitePosition.y });
+
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Draw shaded area **only below the curve**
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height);
-        ctx.bezierCurveTo(
-          kitePosition.x * 0.25,
-          kitePosition.y + 150,
-          kitePosition.x * 0.75,
-          kitePosition.y + 150,
-          kitePosition.x,
-          kitePosition.y
-        );
-        ctx.lineTo(kitePosition.x, canvas.height); // Drop straight down to close shape
-        ctx.closePath(); // Close the filled shape
-        ctx.fillStyle = "#53020D";
-        ctx.fill();
+        if (!isPlaneOff) {
+          ctx.beginPath();
+          ctx.moveTo(0, canvas.height);
 
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+          // Draw only the curve
+          ctx.bezierCurveTo(
+            kitePosition.x * 0.25,
+            canvas.height - (canvas.height - kitePosition.y) * 0.6,
+            kitePosition.x * 0.75,
+            kitePosition.y + 100,
+            kitePosition.x,
+            kitePosition.y
+          );
 
-        // Draw shaded area **below the curve**
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height);
-        ctx.bezierCurveTo(
-          kitePosition.x * 0.25,
-          canvas.height - (canvas.height - kitePosition.y) * 0.6,
-          kitePosition.x * 0.75,
-          kitePosition.y + 100,
-          kitePosition.x,
-          kitePosition.y
-        );
-        ctx.lineTo(kitePosition.x, canvas.height); // Ensure it closes at the bottom
-        ctx.closePath();
-        ctx.fillStyle = "#53020D";
-        ctx.fill();
+          // Apply stroke **only to the curve**
+          ctx.strokeStyle = "#D30D39";
+          ctx.lineWidth = 5;
+          ctx.stroke();
 
-        // Draw the bezier curve (kite string)
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height);
-        ctx.bezierCurveTo(
-          kitePosition.x * 0.25,
-          canvas.height - (canvas.height - kitePosition.y) * 0.6,
-          kitePosition.x * 0.75,
-          kitePosition.y + 100,
-          kitePosition.x,
-          kitePosition.y
-        );
-        ctx.strokeStyle = "#D30D39"; // Red color
-        ctx.lineWidth = 2;
-        ctx.stroke();
+          // Now, fill the bottom area **without stroke**
+          ctx.lineTo(kitePosition.x, canvas.height);
+          ctx.lineTo(0, canvas.height);
+          ctx.closePath();
+          ctx.fillStyle = "#56050F";
+          ctx.fill();
+        }
 
-        // Draw the kite
-        // Draw the kite
         ctx.save();
-        ctx.translate(kitePosition.x + 50, kitePosition.y - 20); // Shift X by 50px
+        ctx.translate(kitePosition.x + 50, kitePosition.y - 20);
         ctx.rotate((20 * Math.PI) / 180);
         ctx.drawImage(
           kiteImg,
@@ -158,10 +145,9 @@ const FlyingKite: React.FC = () => {
 
         requestAnimationFrame(animate);
       }
-
       requestAnimationFrame(animate);
     };
-  }, []);
+  }, [isPlaneOff]);
 
   return (
     <PlaneComponent ref={containerRef}>

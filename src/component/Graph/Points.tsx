@@ -52,9 +52,8 @@ const Message = styled.div`
   font-weight: normal;
 `;
 
-
 interface PointsProps {
-  isPlaneOff: boolean; // Ensure this is defined
+  isPlaneOff: boolean;
 }
 
 const Points: React.FC<PointsProps> = ({ isPlaneOff }) => {
@@ -63,13 +62,20 @@ const Points: React.FC<PointsProps> = ({ isPlaneOff }) => {
 
   useEffect(() => {
     if (isPlaneOff) {
-      setEndTime(true); // Stop when stopTimer is true
+      setEndTime(true); // Stop when isPlaneOff is true
+
+      // Store the points value and timestamp in localStorage
+      const id = Date.now(); // Get the current timestamp
+      localStorage.setItem("point", JSON.stringify({ id, points: parseFloat(points.toFixed(2)) }));
+
+
       return;
     }
 
     setPoints(1.0); // Reset to 1.00 when starting a new round
 
     const timer = setInterval(() => {
+      // Increase points by 0.01 every 100ms, with a max limit of 10.0
       setPoints((prevPoints) => Math.min(prevPoints + 0.01, 10.0));
     }, 100);
 

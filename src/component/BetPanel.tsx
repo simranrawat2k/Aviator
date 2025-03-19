@@ -4,7 +4,6 @@ import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const BetPanelContainer = styled(Box)`
   display: flex;
   height: 100%;
@@ -262,31 +261,89 @@ interface GraphProps {
   isPlaneOff: boolean;
 }
 
-const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+const BetPlane: React.FC<GraphProps> = ({
+  roundStart: loading,
+  isPlaneOff,
+}) => {
   const [bets, setBets] = useState([
-    { betValue: 10.0, isBetPlaced: false, betAfterLoading: false, cashoutValue: 10.0 },
-    { betValue: 10.0, isBetPlaced: false, betAfterLoading: false, cashoutValue: 10.0 },
+    {
+      betValue: 10.0,
+      isBetPlaced: false,
+      betAfterLoading: false,
+      cashoutValue: 10.0,
+    },
+    {
+      betValue: 10.0,
+      isBetPlaced: false,
+      betAfterLoading: false,
+      cashoutValue: 10.0,
+    },
   ]);
   const cashoutIntervals = useRef<(NodeJS.Timeout | null)[]>([null, null]);
- const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(0);
 
   const handleBetClick = (index: number) => {
     setBets((prev) =>
       prev.map((bet, i) =>
         i === index
           ? !loading
-            ? { ...bet, betAfterLoading: true }
+            ? { ...bet, betAfterLoading: true } // Mark for the next round
             : { ...bet, isBetPlaced: true, cashoutValue: bet.betValue }
           : bet
       )
     );
+  
+    // Save to localStorage if waiting for the next round
+    if (!loading) {
+      localStorage.setItem(
+        `prevBet${index + 1}`,
+        JSON.stringify({ isPrevBet: true, betAmount: bets[index].betValue })
+      );
+    }
   };
+  
+
+
+  useEffect(() => {
+    if (loading) {
+      const prevBet1 = JSON.parse(localStorage.getItem("prevBet1") || "null");
+      const prevBet2 = JSON.parse(localStorage.getItem("prevBet2") || "null");
+  
+      setBets([
+        {
+          betValue: prevBet1?.isPrevBet ? prevBet1.betAmount : 10.0,
+          isBetPlaced: prevBet1?.isPrevBet ? true : false,
+          betAfterLoading: false,
+          cashoutValue: prevBet1?.isPrevBet ? prevBet1.betAmount : 10.0,
+        },
+        {
+          betValue: prevBet2?.isPrevBet ? prevBet2.betAmount : 10.0,
+          isBetPlaced: prevBet2?.isPrevBet ? true : false,
+          betAfterLoading: false,
+          cashoutValue: prevBet2?.isPrevBet ? prevBet2.betAmount : 10.0,
+        },
+      ]);
+  
+      // Remove the stored bets after they are used
+      if (prevBet1?.isPrevBet) localStorage.removeItem("prevBet1");
+      if (prevBet2?.isPrevBet) localStorage.removeItem("prevBet2");
+    }
+  }, [loading]);
+  
+  
 
   const handleCancelClick = (index: number) => {
     clearInterval(cashoutIntervals.current[index]!);
     setBets((prev) =>
       prev.map((bet, i) =>
-        i === index ? { ...bet, betValue: 10.0, isBetPlaced: false, betAfterLoading: false } : bet
+        i === index
+          ? {
+              ...bet,
+              betValue: 10.0,
+              isBetPlaced: false,
+              betAfterLoading: false,
+            }
+          : bet
       )
     );
   };
@@ -294,7 +351,9 @@ const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => 
   const handleCashOutClick = (index: number) => {
     toast.success(`You won ${bets[index].cashoutValue.toFixed(2)} INR 🎉`);
     clearInterval(cashoutIntervals.current[index]!);
-    setBets((prev) => prev.map((bet, i) => (i === index ? { ...bet, isBetPlaced: false } : bet)));
+    setBets((prev) =>
+      prev.map((bet, i) => (i === index ? { ...bet, isBetPlaced: false } : bet))
+    );
   };
 
   useEffect(() => {
@@ -302,54 +361,107 @@ const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => 
       if (!loading && !isPlaneOff && bet.isBetPlaced) {
         cashoutIntervals.current[index] = setInterval(() => {
           setBets((prev) =>
-            prev.map((b, i) => (i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b))
+            prev.map((b, i) =>
+              i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b
+            )
           );
         }, 100);
       }
     });
-    return () => cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
+    return () =>
+      cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
   }, [loading, isPlaneOff, bets]);
 
   useEffect(() => {
     if (isPlaneOff) {
       cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
-      bets.forEach((bet, index) => {
-        if (bet.isBetPlaced) toast.error(`Bet ${index + 1} Lost ❌`);
-      });
+      setBets((prev) =>
+        prev.map((bet, index) => {
+          if (bet.isBetPlaced) {
+            // toast.error(`Bet ${index + 1} Lost ❌`);
+          }
+          return { ...bet, isBetPlaced: false, betAfterLoading: false }; // Reset the bet state
+        })
+      );
     }
   }, [isPlaneOff]);
+
+  useEffect(() => {
+    if (!loading) {
+      setBets((prevBets) =>
+        prevBets.map((bet) => {
+          if (bet.betAfterLoading) {
+            console.log(`Automatically placing bet of ${bet.betValue} INR`);
+            return {
+              ...bet,
+              isBetPlaced: true,
+              betAfterLoading: false,
+              cashoutValue: bet.betValue,
+            };
+          }
+          return bet;
+        })
+      );
+    }
+  }, [loading]);
 
   return (
     <BetPanelContainer>
       {bets.map((bet, index) => (
         <BetSection key={index}>
           <BetOneContainer>
-          <TabsContainer>
-        <ActiveTabIndicator position={activeTab} />
-        <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>Bet</Tab>
-        <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>Auto</Tab>
-      </TabsContainer>
+            <TabsContainer>
+              <ActiveTabIndicator position={activeTab} />
+              <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>
+                Bet
+              </Tab>
+              <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>
+                Auto
+              </Tab>
+            </TabsContainer>
             <BetOneInsideContainer>
               <LeftSection>
                 <BetControls>
-                  <PlusMinusButton onClick={() => setBets((prev) => prev.map((b, i) => i === index ? { ...b, betValue: Math.max(1, b.betValue - 1) } : b))}>
+                  <PlusMinusButton
+                    onClick={() =>
+                      setBets((prev) =>
+                        prev.map((b, i) =>
+                          i === index
+                            ? { ...b, betValue: Math.max(1, b.betValue - 1) }
+                            : b
+                        )
+                      )
+                    }
+                  >
                     −
                   </PlusMinusButton>
                   <BetValue>{bet.betValue.toFixed(2)}</BetValue>
-                  <PlusMinusButton onClick={() => setBets((prev) => prev.map((b, i) => i === index ? { ...b, betValue: b.betValue + 1 } : b))}>
+                  <PlusMinusButton
+                    onClick={() =>
+                      setBets((prev) =>
+                        prev.map((b, i) =>
+                          i === index ? { ...b, betValue: b.betValue + 1 } : b
+                        )
+                      )
+                    }
+                  >
                     +
                   </PlusMinusButton>
                 </BetControls>
                 <BetAmountButtons>
                   {[100, 500, 1000, 5000].map((amount) => (
-                    <AmountButton key={amount} onClick={() => 
-                      setBets((prev) => prev.map((b, i) => 
-                        i === index ? { ...b, betValue: amount } : b
-                      ))
-                    }>
+                    <AmountButton
+                      key={amount}
+                      onClick={() =>
+                        setBets((prev) =>
+                          prev.map((b, i) =>
+                            i === index ? { ...b, betValue: amount } : b
+                          )
+                        )
+                      }
+                    >
                       {amount}
                     </AmountButton>
-                    
                   ))}
                 </BetAmountButtons>
               </LeftSection>
@@ -370,12 +482,16 @@ const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => 
                     <p style={{ color: "#A6A2AD" }}>Waiting for next round</p>
                     <WaitingCancelText>CANCEL</WaitingCancelText>
                   </RightWaiting>
-                ) : loading === false && isPlaneOff === false && bet.isBetPlaced ? (
+                ) : loading === false &&
+                  isPlaneOff === false &&
+                  bet.isBetPlaced ? (
                   <RightCashOut>
                     <CashText>CASH OUT</CashText>
-                    <CashoutAmount>{bet.cashoutValue.toFixed(2)} INR</CashoutAmount>
+                    <CashoutAmount>
+                      {bet.cashoutValue.toFixed(2)} INR
+                    </CashoutAmount>
                   </RightCashOut>
-                ) : bet.isBetPlaced ? (
+                ) : bet.isBetPlaced && !isPlaneOff ? (
                   <RightCancel>
                     <CancelText>CANCEL</CancelText>
                   </RightCancel>
@@ -394,6 +510,5 @@ const BetPlane: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => 
     </BetPanelContainer>
   );
 };
-
 
 export default BetPlane;
