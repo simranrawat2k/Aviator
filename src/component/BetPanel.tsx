@@ -361,22 +361,40 @@ const BetPlane: React.FC<GraphProps> = ({
       prev.map((bet, i) => (i === index ? { ...bet, isBetPlaced: false } : bet))
     );
   };
-
+  
   useEffect(() => {
-    bets.forEach((bet, index) => {
-      if (!loading && !isPlaneOff && bet.isBetPlaced) {
-        cashoutIntervals.current[index] = setInterval(() => {
-          setBets((prev) =>
-            prev.map((b, i) =>
-              i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b
-            )
-          );
-        }, 100);
-      }
-    });
-    return () =>
+    if (!loading) {
+      setTimeout(() => {
+        // Clear previous intervals before starting new ones
+        cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
+        cashoutIntervals.current = [];
+  
+        bets.forEach((bet, index) => {
+          if (!isPlaneOff && bet.isBetPlaced) {
+            const interval = setInterval(() => {
+              setBets((prev) =>
+                prev.map((b, i) =>
+                  i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b
+                )
+              );
+            }, 100);
+  
+            // Store interval reference
+            cashoutIntervals.current[index] = interval;
+          }
+        });
+      }, 1000); // 1-second delay before starting intervals
+    }
+  
+    return () => {
+      // Cleanup function only when the component unmounts
       cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
-  }, [loading, isPlaneOff, bets]);
+      cashoutIntervals.current = [];
+    };
+  }, [loading, isPlaneOff]); // Removed 'bets' from dependencies
+  
+  
+  
 
   useEffect(() => {
     if (isPlaneOff) {

@@ -35,7 +35,7 @@ const AxisDots: React.FC = () => {
     // Delay movement start by 5 seconds
     const timer = setTimeout(() => {
       setStartMoving(true);
-    }, 0); // <-- 5 seconds delay before movement starts
+    }, 1000); // <-- 5 seconds delay before movement starts
 
     return () => clearTimeout(timer);
   }, []);

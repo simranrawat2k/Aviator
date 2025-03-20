@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 const PointsWrapper = styled.div`
@@ -52,34 +52,47 @@ const Message = styled.div`
   font-weight: normal;
 `;
 
-interface PointsProps {
+interface GraphProps {
+  roundStart: boolean;
   isPlaneOff: boolean;
 }
 
-const Points: React.FC<PointsProps> = ({ isPlaneOff }) => {
+const Points: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
   const [points, setPoints] = useState(1.0);
   const [endTime, setEndTime] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const delayRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     if (isPlaneOff) {
       setEndTime(true); // Stop when isPlaneOff is true
 
       // Store the points value and timestamp in localStorage
-      const id = Date.now(); // Get the current timestamp
+      const id = Date.now();
       localStorage.setItem("point", JSON.stringify({ id, points: parseFloat(points.toFixed(2)) }));
 
+      // Clear both timers when plane takes off
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (delayRef.current) clearTimeout(delayRef.current);
 
       return;
     }
 
-    setPoints(1.0); // Reset to 1.00 when starting a new round
+    setEndTime(false);
+    setPoints(1.0);
 
-    const timer = setInterval(() => {
-      // Increase points by 0.01 every 100ms, with a max limit of 10.0
-      setPoints((prevPoints) => Math.min(prevPoints + 0.01, 10.0));
-    }, 100);
+    // Add a 1-second delay before starting the timer
+    delayRef.current = setTimeout(() => {
+      timerRef.current = setInterval(() => {
+        setPoints((prevPoints) => Math.min(prevPoints + 0.01, 10.0));
+      }, 100);
+    }, 1000);
 
-    return () => clearInterval(timer);
+    // Cleanup function to clear timers
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      if (delayRef.current) clearTimeout(delayRef.current);
+    };
   }, [isPlaneOff]);
 
   return (
@@ -91,5 +104,6 @@ const Points: React.FC<PointsProps> = ({ isPlaneOff }) => {
     </PointsWrapper>
   );
 };
+
 
 export default Points;
