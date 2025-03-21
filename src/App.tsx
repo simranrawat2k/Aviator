@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "./component/Header";
 import Loader from "./component/Loader";
 import Graph from "./component/Graph";
@@ -6,16 +6,17 @@ import Main from "./component/Main";
 import MovingDots from "./component/Demo";
 import AudioPlayer from "./component/AudioPlayer";
 import { BalanceProvider } from "./context/BalanceContext";
+import { GameProvider } from "./context/GameContext"; 
 
 function App() {
   return (
-    <div>
+    <GameProvider> 
       <BalanceProvider>
         <AudioPlayer />
         <Header />
         <Main />
       </BalanceProvider>
-    </div>
+    </GameProvider>
   );
 }
 

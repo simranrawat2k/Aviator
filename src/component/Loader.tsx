@@ -58,7 +58,7 @@ const Loader: React.FC = () => {
       <LoadingBarContainer>
         <LoadingBar
           animate={{ x: ["100%", "-100%"] }} 
-          transition={{ duration: 3, ease: "linear" }}
+          transition={{ duration: 5, ease: "linear" }}
         />
       </LoadingBarContainer>
     </LoaderContainer>

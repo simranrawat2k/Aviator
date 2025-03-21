@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useContext, useEffect, useState } from "react";
+import styled from "styled-components"; 
+import { useGameContext } from "../context/GameContext";
+
 
 const TabsContainer = styled.div`
   display: flex;
@@ -26,7 +28,7 @@ const Tab = styled.div<{ active: boolean }>`
 const ActiveTabIndicator = styled.div<{ position: number }>`
   position: absolute;
   top: 0;
-  left: ${(props) => (props.position === 0 ? '0' : '50%')};
+  left: ${(props) => (props.position === 0 ? "0" : "50%")};
   width: 50%;
   height: 100%;
   background: #2C2D30;
@@ -44,24 +46,40 @@ const ContentContainer = styled.div`
   text-align: center;
 `;
 
-
 export default function Users() {
   const [activeTab, setActiveTab] = useState(0);
-
+  const { gameState } = useGameContext();
   return (
     <>
-    <TabsContainer>
-      <ActiveTabIndicator position={activeTab} />
-      <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>
-        All Bets
-      </Tab>
-      <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>
-        My Bets
-      </Tab>
-    </TabsContainer>
-    <ContentContainer>
-    {activeTab === 0 ? <p>All Bets Content</p> : <p>My Bets Content</p>}
-  </ContentContainer>
-  </>
+      <TabsContainer>
+        <ActiveTabIndicator position={activeTab} />
+        <Tab active={activeTab === 0} onClick={() => setActiveTab(0)}>
+          All Bets
+        </Tab>
+        <Tab active={activeTab === 1} onClick={() => setActiveTab(1)}>
+          My Bets
+        </Tab>
+      </TabsContainer>
+      <ContentContainer>
+        {activeTab === 0 ? (
+          <>
+            <p>All Bets Content</p>
+            <p><strong>Game Status:</strong> {gameState.status}</p>
+            <p><strong>Multiplier:</strong> {gameState.multiplier}</p>
+            <p><strong>Round ID:</strong> {gameState.roundId}</p>
+            <p><strong>Round Start:</strong> {gameState.roundStart ? "Yes" : "No"}</p>
+            <p><strong>Is Plane Off:</strong> {gameState.isPlaneOff ? "Yes" : "No"}</p>
+          </>
+        ) : (
+          <>
+            <p>My Bets Content</p>
+            <p><strong>Game Status:</strong> {gameState.status}</p>
+            <p><strong>Multiplier:</strong> {gameState.multiplier}</p>
+            <p><strong>Round Start:</strong> {gameState.roundStart ? "Yes" : "No"}</p>
+            <p><strong>Is Plane Off:</strong> {gameState.isPlaneOff ? "Yes" : "No"}</p>
+          </>
+        )}
+      </ContentContainer>
+    </>
   );
 }

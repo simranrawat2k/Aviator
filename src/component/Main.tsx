@@ -91,7 +91,7 @@ const Main: React.FC = () => {
 
           restartTimer = setTimeout(() => {
             startRoundCycle();
-          }, 6000); // Restart cycle
+          }, 5000); // Restart cycle
         }, randomFlyOffTime * 1000); // Convert to milliseconds
       }, 3000); // Loader time
     };

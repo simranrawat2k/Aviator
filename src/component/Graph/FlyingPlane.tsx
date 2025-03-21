@@ -75,11 +75,10 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
           const ctx = canvas.getContext("2d");
           if (!ctx) return;
 
-          console.log(`Animating at: x=${kitePosition.x}, y=${kitePosition.y}`);
 
           if (isPlaneOff) {
             // Move the kite off the screen immediately
-            kitePosition.x += 5; 
+            kitePosition.x += 10; 
           } else {
             if (!isMovingDown && !isReturning) {
               kitePosition.x = (1 - t) * 0 + t * peakX;
