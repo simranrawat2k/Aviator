@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useGameContext } from "../../context/GameContext";
 
 const PointsWrapper = styled.div`
   display: flex;
@@ -57,43 +58,53 @@ interface GraphProps {
   isPlaneOff: boolean;
 }
 
-const Points: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+
+
+
+const Points: React.FC = () => {
+  const { gameState } = useGameContext();
   const [points, setPoints] = useState(1.0);
   const [endTime, setEndTime] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const delayRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (isPlaneOff) {
-      setEndTime(true); // Stop when isPlaneOff is true
+    console.log("Game Status:", gameState.status);
+    console.log("Rendering Points Component");
 
-      // Store the points value and timestamp in localStorage
-      const id = Date.now();
-      localStorage.setItem("point", JSON.stringify({ id, points: parseFloat(points.toFixed(2)) }));
-
-      // Clear both timers when plane takes off
+    if (gameState.status === 2) {
+      // Reset to 1.00x and stop animation
+      setPoints(1.0);
+      setEndTime(false);
       if (timerRef.current) clearInterval(timerRef.current);
-      if (delayRef.current) clearTimeout(delayRef.current);
-
       return;
     }
 
-    setEndTime(false);
-    setPoints(1.0);
+    if (gameState.status === 4) {
+      // Stop animation and display "FLEW AWAY!"
+      setEndTime(true);
+      localStorage.setItem(
+        "point",
+        JSON.stringify({ id: Date.now(), points: parseFloat(points.toFixed(2)) })
+      );
+      if (timerRef.current) clearInterval(timerRef.current);
+      return;
+    }
 
-    // Add a 1-second delay before starting the timer
-    delayRef.current = setTimeout(() => {
+    if (gameState.status === 3) {
+      // Start animation immediately
+      setEndTime(false);
+      setPoints(1.0); 
+
       timerRef.current = setInterval(() => {
-        setPoints((prevPoints) => Math.min(prevPoints + 0.01, 10.0));
+        setPoints((prev) => Math.min(prev + 0.01, 10.0));
+        console.log("Points Updated:", points);
       }, 100);
-    }, 1000);
+    }
 
-    // Cleanup function to clear timers
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      if (delayRef.current) clearTimeout(delayRef.current);
     };
-  }, [isPlaneOff]);
+  }, [gameState.status]);
 
   return (
     <PointsWrapper>
@@ -106,4 +117,7 @@ const Points: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
 };
 
 
+
+
 export default Points;
+

@@ -8,6 +8,7 @@ import FlyingPlane from "./Graph/FlyingPlane";
 import AxisDots from "./Graph/AxisDots";
 import Points from "./Graph/Points";
 import RoundHistory from "./RoundHistory";
+import { useGameContext } from "../context/GameContext";
 
 const GraphBox = styled(Box)<{ loading: boolean }>`
   background: url(${wheel}) no-repeat center;
@@ -70,28 +71,37 @@ interface GraphProps {
 }
 
 const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+  const { gameState } = useGameContext();
   const [startRotation, setStartRotation] = useState(false);
 
+  // useEffect(() => {
+  //   if (!loading) {
+  //     const timer = setTimeout(() => {
+  //       setStartRotation(true);
+  //     }, 1000); // Delay rotation by 1 second
+  //     return () => clearTimeout(timer);
+  //   } else {
+  //     setStartRotation(false); // Reset when round starts
+  //   }
+  // }, [loading]);
+
   useEffect(() => {
-    if (!loading) {
-      const timer = setTimeout(() => {
-        setStartRotation(true);
-      }, 1000); // Delay rotation by 1 second
-      return () => clearTimeout(timer);
+    if (gameState.status === 3 || gameState.status === 4) {
+      setStartRotation(true);
     } else {
-      setStartRotation(false); // Reset when round starts
+      setStartRotation(false); // Stop rotation of wheel when status is 1 or 2
     }
-  }, [loading]);
+  }, [gameState.status]);
+  
 
   return (
     <Box sx={{ background: "#101011", width: "100%", height: "100%" }}>
       <RoundHistory />
-      <GraphBox loading={loading}>
-        {loading ? <Loader /> : <RotatingWheel isRotating={startRotation} />}
-        {loading && <Airplane src={airplane} alt="Airplane" />}
-        {!loading && <AxisDots />}
-        {!loading && <FlyingPlane roundStart={loading} isPlaneOff={isPlaneOff} />}
-        {!loading && <Points roundStart={loading} isPlaneOff={isPlaneOff} />}
+      <GraphBox loading={gameState.status === 1}>
+        {gameState.status === 1 ? <Loader /> : <RotatingWheel isRotating={startRotation} />}
+        {gameState.status !== 1 && <AxisDots />}
+        {gameState.status !== 1 && <FlyingPlane  />}
+        {gameState.status !== 1 && <Points />}
       </GraphBox>
     </Box>
   );

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import KiteImage from "../../assets/airplane.png";
+import { useGameContext } from "../../context/GameContext"; // Importing the game context
 
 const PlaneComponent = styled.div`
   position: absolute;
@@ -14,12 +15,10 @@ const PlaneComponent = styled.div`
   overflow: hidden;
 `;
 
-interface GraphProps {
-  roundStart: boolean;
-  isPlaneOff: boolean;
-}
+const FlyingKite: React.FC = () => {
+  const { gameState } = useGameContext(); // Getting game state from context
+  const { status, isPlaneOff } = gameState; // Extracting required values
 
-const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -46,7 +45,7 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
-
+  
     let startTime: number | null = null;
     let isMovingDown = false;
     let isReturning = false;
@@ -55,30 +54,31 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
     let peakX = canvas.width * 0.7;
     let endX = canvas.width * 0.85;
     let endY = canvas.height * 0.6;
-
+  
     const kiteImg = new Image();
     kiteImg.src = KiteImage;
-
+  
     kiteImg.onload = () => {
       console.log("Kite Image Loaded");
-
+  
       // Clear any existing timeout
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
+  
+      // Do not start animation if status is 2
+      if (status === 2) return;
+  
       const startAnimation = () => {
         function animate(time: number) {
           if (!startTime) startTime = time;
           const elapsed = time - startTime;
           const t = Math.min(elapsed / duration, 1);
-
+  
           if (!canvas) return;
           const ctx = canvas.getContext("2d");
           if (!ctx) return;
-
-
+  
           if (isPlaneOff) {
-            // Move the kite off the screen immediately
-            kitePosition.x += 10; 
+            kitePosition.x += 10;
           } else {
             if (!isMovingDown && !isReturning) {
               kitePosition.x = (1 - t) * 0 + t * peakX;
@@ -106,15 +106,15 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
               }
             }
           }
-
+  
           setLastKitePosition({ x: kitePosition.x, y: kitePosition.y });
-
+  
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  
           if (!isPlaneOff) {
             ctx.beginPath();
             ctx.moveTo(0, canvas.height);
-
+  
             ctx.bezierCurveTo(
               kitePosition.x * 0.25,
               canvas.height - (canvas.height - kitePosition.y) * 0.6,
@@ -123,18 +123,18 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
               kitePosition.x,
               kitePosition.y
             );
-
+  
             ctx.strokeStyle = "#D30D39";
             ctx.lineWidth = 5;
             ctx.stroke();
-
+  
             ctx.lineTo(kitePosition.x, canvas.height);
             ctx.lineTo(0, canvas.height);
             ctx.closePath();
             ctx.fillStyle = "#56050F";
             ctx.fill();
           }
-
+  
           ctx.save();
           ctx.translate(kitePosition.x + 50, kitePosition.y - 20);
           ctx.rotate((20 * Math.PI) / 180);
@@ -146,28 +146,25 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
             kiteSize
           );
           ctx.restore();
-
+  
           requestAnimationFrame(animate);
         }
-
+  
         requestAnimationFrame(animate);
       };
-
-      // If `isPlaneOff` is true, start animation immediately
-      if (isPlaneOff) {
+  
+      // Start animation IMMEDIATELY for status 3 and 4
+      if (status === 3 || status === 4) {
         startAnimation();
-      } else {
-        // Otherwise, wait 1 second before starting
-        timeoutRef.current = setTimeout(() => {
-          startAnimation();
-        }, 1000);
       }
     };
-
+  
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [isPlaneOff]);
+  }, [status, isPlaneOff]);
+  
+  
 
   return (
     <PlaneComponent ref={containerRef}>
@@ -183,6 +180,5 @@ const FlyingKite: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) =
     </PlaneComponent>
   );
 };
-
 
 export default FlyingKite;

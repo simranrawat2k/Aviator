@@ -1,89 +1,84 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useGameContext } from "../../context/GameContext";
 
 const AxisDots: React.FC = () => {
-  const dotSize = 4; // Reduced dot size
-  const speed = 1.2; // Speed of dots moving left and down
-  const interval = 300; // Interval between new dots appearing
-  const initialSpacingX = 110; // Spacing between horizontal dots
-  const initialSpacingY = 35; // Spacing between vertical dots
+  const { gameState } = useGameContext();
+  const dotSize = 4;
+  const speed = 1.2;
+  const interval = 300;
+  const initialSpacingX = 110; // Adjust spacing as needed
+  const initialSpacingY = 35;  // Adjust spacing as needed
 
   const initialDotCountX = Math.ceil(window.innerWidth / initialSpacingX);
   const initialDotCountY = Math.ceil(window.innerHeight / initialSpacingY);
 
   const [dotsX, setDotsX] = useState<{ id: number; x: number }[]>([]);
   const [dotsY, setDotsY] = useState<{ id: number; y: number }[]>([]);
-  const [startMoving, setStartMoving] = useState(false);
+
+  const lastDotXRef = useRef(initialDotCountX * initialSpacingX);
+  const lastDotYRef = useRef(-initialSpacingY); // Start above the screen
 
   useEffect(() => {
-    const initialDotsX: { id: number; x: number }[] = [];
-    let lastDotX = 0;
-    for (let i = 0; i < initialDotCountX; i++) {
-      lastDotX += initialSpacingX;
-      initialDotsX.push({ id: Date.now() + i, x: lastDotX });
-    }
+    // Initialize dots with proper spacing
+    const initialDotsX = Array.from({ length: initialDotCountX }, (_, i) => ({
+      id: Date.now() + i,
+      x: i * initialSpacingX,
+    }));
 
-    const initialDotsY: { id: number; y: number }[] = [];
-    let lastDotY = 0;
-    for (let i = 0; i < initialDotCountY; i++) {
-      lastDotY += initialSpacingY;
-      initialDotsY.push({ id: Date.now() + i, y: lastDotY });
-    }
+    const initialDotsY = Array.from({ length: initialDotCountY }, (_, i) => ({
+      id: Date.now() + i,
+      y: i * initialSpacingY,
+    }));
 
     setDotsX(initialDotsX);
     setDotsY(initialDotsY);
-
-    // Delay movement start by 5 seconds
-    const timer = setTimeout(() => {
-      setStartMoving(true);
-    }, 1000); // <-- 5 seconds delay before movement starts
-
-    return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (!startMoving) return; // Do nothing until startMoving is true
+    if (gameState.status === 2) return; // Stop movement when status = 2
 
-    let lastDotX = window.innerWidth;
-    let lastDotY = 0;
+    const moveDots = () => {
+      if (gameState.status === 3 || gameState.status === 4) {
+        setDotsX((prev) =>
+          prev
+            .map((dot) => ({ ...dot, x: dot.x - speed }))
+            .filter((dot) => dot.x > -dotSize)
+        );
+
+        setDotsY((prev) =>
+          prev
+            .map((dot) => ({ ...dot, y: dot.y + speed }))
+            .filter((dot) => dot.y < window.innerHeight + dotSize) // Remove dots when off-screen
+        );
+      }
+    };
 
     const addDotX = () => {
-      lastDotX += initialSpacingX;
-      setDotsX((prev) => [...prev, { id: Date.now(), x: lastDotX }]);
+      lastDotXRef.current += initialSpacingX;
+      setDotsX((prev) => [
+        ...prev,
+        { id: Date.now(), x: lastDotXRef.current },
+      ]);
     };
 
     const addDotY = () => {
-      lastDotY -= initialSpacingY;
-      setDotsY((prev) => [...prev, { id: Date.now(), y: lastDotY }]);
+      lastDotYRef.current -= initialSpacingY; // Ensure spacing remains consistent
+      setDotsY((prev) => [
+        { id: Date.now(), y: lastDotYRef.current },
+        ...prev,
+      ]);
     };
 
-    const moveDotsX = () => {
-      setDotsX((prev) =>
-        prev
-          .map((dot) => ({ ...dot, x: dot.x - speed }))
-          .filter((dot) => dot.x > -dotSize)
-      );
-    };
-
-    const moveDotsY = () => {
-      setDotsY((prev) =>
-        prev
-          .map((dot) => ({ ...dot, y: dot.y + speed }))
-          .filter((dot) => dot.y < window.innerHeight + dotSize)
-      );
-    };
-
+    const moveDotsInterval = setInterval(moveDots, 20);
     const addDotIntervalX = setInterval(addDotX, interval);
-    const addDotIntervalY = setInterval(addDotY, interval);
-    const moveDotsIntervalX = setInterval(moveDotsX, 20);
-    const moveDotsIntervalY = setInterval(moveDotsY, 20);
+    const addDotIntervalY = setInterval(addDotY, interval/2); // Reduce frequency of vertical dot appearance
 
     return () => {
+      clearInterval(moveDotsInterval);
       clearInterval(addDotIntervalX);
       clearInterval(addDotIntervalY);
-      clearInterval(moveDotsIntervalX);
-      clearInterval(moveDotsIntervalY);
     };
-  }, [startMoving]);
+  }, [gameState.status]);
 
   return (
     <div
