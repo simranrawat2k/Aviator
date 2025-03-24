@@ -21,11 +21,12 @@ const Sidebar = styled(Box)`
   width: 26%;
   background-color: #101011;
   color: white;
-  padding: 16px;
+  
 
   @media (max-width: 1000px) {
     width: 100%;
     order: 3;
+    padding-top:30px;
   }
 `;
 
@@ -45,6 +46,7 @@ const GraphContainer = styled(Box)`
 
   @media (max-width: 1000px) {
     order: 1;
+    height:80vh;
   }
 `;
 
@@ -58,10 +60,13 @@ const BetPanel = styled(Box)`
   @media (max-width: 1000px) {
     order: 2;
     height: auto;
+    justify-content: center;
   }
 
   @media (max-width: 700px) {
     flex-direction: row;
+    justify-content: center;
+    
   }
 `;
 
@@ -84,7 +89,7 @@ const Main: React.FC = () => {
         // Generate a random float between 0.0 and 10.0 seconds
         // write 20 to generate points between 0.00 to 3.00
         const randomFlyOffTime = Math.random() * 10;
-        console.log(`Plane will fly off in: ${randomFlyOffTime.toFixed(1)} seconds`);
+      
 
         planeTimer = setTimeout(() => {
           setIsPlaneOff(true);
@@ -112,10 +117,10 @@ const Main: React.FC = () => {
       </Sidebar>
       <RightSection>
         <GraphContainer>
-          <Graph roundStart={roundStart} isPlaneOff={isPlaneOff} />
+          <Graph />
         </GraphContainer>
         <BetPanel>
-          <BetPlane roundStart={roundStart} isPlaneOff={isPlaneOff} />
+          <BetPlane/>
         </BetPanel>
       </RightSection>
     </Container>

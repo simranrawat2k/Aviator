@@ -63,58 +63,34 @@ interface GraphProps {
 
 const Points: React.FC = () => {
   const { gameState } = useGameContext();
-  const [points, setPoints] = useState(1.0);
   const [endTime, setEndTime] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    console.log("Game Status:", gameState.status);
-    console.log("Rendering Points Component");
+    
 
     if (gameState.status === 2) {
-      // Reset to 1.00x and stop animation
-      setPoints(1.0);
       setEndTime(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-      return;
     }
 
     if (gameState.status === 4) {
-      // Stop animation and display "FLEW AWAY!"
       setEndTime(true);
       localStorage.setItem(
         "point",
-        JSON.stringify({ id: Date.now(), points: parseFloat(points.toFixed(2)) })
+        JSON.stringify({ id: Date.now(), points: parseFloat(gameState.multiplier.toFixed(2)) })
       );
-      if (timerRef.current) clearInterval(timerRef.current);
-      return;
     }
-
-    if (gameState.status === 3) {
-      // Start animation immediately
-      setEndTime(false);
-      setPoints(1.0); 
-
-      timerRef.current = setInterval(() => {
-        setPoints((prev) => Math.min(prev + 0.01, 10.0));
-        console.log("Points Updated:", points);
-      }, 100);
-    }
-
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
   }, [gameState.status]);
 
   return (
     <PointsWrapper>
       <PointsContainer endTime={endTime}>
         {endTime && <Message>FLEW AWAY!</Message>}
-        <PointsText endTime={endTime}>{points.toFixed(2)}x</PointsText>
+        <PointsText endTime={endTime}>{gameState.multiplier.toFixed(2)}x</PointsText>
       </PointsContainer>
     </PointsWrapper>
   );
 };
+
 
 
 

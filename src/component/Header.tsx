@@ -5,6 +5,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useBalance } from "../context/BalanceContext";
+import UserData from "../Json/UserData.json"
 
 
 const HeaderContainer = styled.header`
@@ -85,15 +86,17 @@ const Separator = styled.div`
   background-color:rgb(68, 69, 72);
 `;
 
-const Balance = styled.span`
+const BalanceBox = styled.span`
   color: #24A909;
   font-weight: bold;
   font-size: 18px;
+  margin-left:20px;
 `;
 
 const Header: React.FC = () => {
   const { balance } = useBalance();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const { UserName, Balance } = UserData;
 
   return (
     <HeaderContainer>
@@ -106,7 +109,8 @@ const Header: React.FC = () => {
       </LeftSection>
       <RightSection>
         <BalanceContainer>
-          <Balance>{balance.toFixed(2)}</Balance>
+        <span>{UserName}</span> 
+          <BalanceBox>{balance.toFixed(2)}</BalanceBox>
           <span>INR</span>
         </BalanceContainer>
         <Separator />

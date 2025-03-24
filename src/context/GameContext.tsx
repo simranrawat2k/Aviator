@@ -23,6 +23,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     isPlaneOff: false,
   });
 
+ 
+
   useEffect(() => {
     const ws = new WebSocket("ws://localhost:8000");
 
@@ -32,9 +34,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     ws.onmessage = (event) => {
       const updatedGameState: GameState = JSON.parse(event.data);
-      console.log("Game State Update:", updatedGameState);
-      setGameState(updatedGameState);
+      
+    
+      setGameState((prevState) => ({
+        ...prevState,
+        ...updatedGameState, // Merge new values while keeping old ones
+      }));
     };
+    
 
     ws.onclose = () => {
       console.log("Disconnected from WebSocket server");

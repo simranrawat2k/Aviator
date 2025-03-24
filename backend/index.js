@@ -19,36 +19,47 @@ let gameState = {
 
 // Function to start a new round
 const startRound = () => {
-    gameState.roundId = Date.now(); // Use timestamp as round ID
+    gameState.roundId = Date.now(); // New round ID
     gameState.status = 1; // Loader screen (Round start)
-    gameState.multiplier = 1.0;
+    gameState.multiplier = 1.0;  
     gameState.roundStart = true;
     gameState.isPlaneOff = false;
 
     broadcastGameState();
 
     setTimeout(() => {
-        gameState.status = 2; // 3-second pause before animation
+        gameState.status = 2; // Pause before animation
         gameState.roundStart = false;
         broadcastGameState();
 
         setTimeout(() => {
             gameState.status = 3; // Animation starts
-            let flyTime = Math.random() * 10; // Random fly time (0 to 10 seconds)
-            
-            gameState.multiplier = parseFloat((1 + flyTime * 0.1).toFixed(2)); // Ensure number type
+            gameState.multiplier = 1.0;
             broadcastGameState();
-        
-            setTimeout(() => {
-                gameState.status = 4; // Plane crashes
-                gameState.isPlaneOff = true;
-                broadcastGameState();
-        
-                setTimeout(startRound, 5000); // Restart after 5 seconds
-            }, flyTime * 1000); // Wait for the flyTime duration
+
+            let flyTime = Math.random() * 10; // Random flight duration (0-10s)
+            let elapsedTime = 0;
+
+            // Start incrementing multiplier on the backend
+            const incrementInterval = setInterval(() => {
+                if (elapsedTime >= flyTime) {
+                    clearInterval(incrementInterval);
+                    gameState.status = 4; // Plane crashes
+                    gameState.isPlaneOff = true;
+                    broadcastGameState();
+
+                    setTimeout(startRound, 5000); // Restart round after 5s
+                } else {
+                    elapsedTime += 0.1;
+                    gameState.multiplier = parseFloat((1 + elapsedTime * 0.1).toFixed(2));
+                    broadcastGameState();
+                }
+            }, 100); // Increase multiplier every 100ms
+
         }, 3000); // Status 2 runs for 3 seconds
     }, 5000); // Status 1 runs for 5 seconds
 };
+
 
 
 

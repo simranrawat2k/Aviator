@@ -1,0 +1,9 @@
+{
+    "roundId": "12345",
+    "UserName": "JohnDoe",
+    "bets": [
+      { "betValue": 100 },
+      { "betValue": 200 }
+    ]
+}
+  

@@ -24,6 +24,10 @@ const LoadingText = styled.p`
   font-size: 34px;
   padding:0px;
   margin:20px;
+
+  @media (max-width: 720px) {
+   font-size: 26px;
+  }
 `;
 
 const LoadingBarContainer = styled.div`

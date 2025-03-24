@@ -11,6 +11,7 @@ const TabsContainer = styled.div`
   border-radius: 28px;
   position: relative;
   overflow: hidden;
+  margin-top:10px;
 `;
 
 const Tab = styled.div<{ active: boolean }>`
@@ -40,6 +41,7 @@ const ActiveTabIndicator = styled.div<{ position: number }>`
 const ContentContainer = styled.div`
   margin-top: 20px;
   padding: 10px;
+  margin:10px;
   background: #2C2D30;
   color: #FFFFFF;
   border-radius: 10px;

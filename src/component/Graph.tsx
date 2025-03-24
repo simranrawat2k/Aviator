@@ -65,25 +65,9 @@ const Airplane = styled.img`
   transform: rotate(10deg);
 `;
 
-interface GraphProps {
-  roundStart: boolean;
-  isPlaneOff: boolean;
-}
-
-const Graph: React.FC<GraphProps> = ({ roundStart: loading, isPlaneOff }) => {
+const Graph: React.FC = () => {
   const { gameState } = useGameContext();
   const [startRotation, setStartRotation] = useState(false);
-
-  // useEffect(() => {
-  //   if (!loading) {
-  //     const timer = setTimeout(() => {
-  //       setStartRotation(true);
-  //     }, 1000); // Delay rotation by 1 second
-  //     return () => clearTimeout(timer);
-  //   } else {
-  //     setStartRotation(false); // Reset when round starts
-  //   }
-  // }, [loading]);
 
   useEffect(() => {
     if (gameState.status === 3 || gameState.status === 4) {

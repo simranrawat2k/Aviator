@@ -4,6 +4,8 @@ import styled from "styled-components";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useBalance } from "../context/BalanceContext";
+import { useGameContext } from "../context/GameContext";
+import UserData from "../Json/UserData.json";
 
 const BetPanelContainer = styled(Box)`
   display: flex;
@@ -12,6 +14,7 @@ const BetPanelContainer = styled(Box)`
   gap: 2px;
   @media (max-width: 700px) {
     flex-direction: column;
+    gap: 20px;
   }
 `;
 
@@ -45,12 +48,20 @@ const BetOneInsideContainer = styled(Box)`
   justify-content: center;
   align-items: center;
   gap: 20px;
+  width:100%;
 `;
 
 const LeftSection = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 0px;
+  width:30%;
+  margin-right:40px;
+
+  @media (max-width: 720px) {
+    width: 45%;
+    gap: 10px;
+  }
 `;
 
 const BetControls = styled(Box)`
@@ -60,6 +71,11 @@ const BetControls = styled(Box)`
   border: 2px solid #2c2d30;
   padding: 0px 8px;
   border-radius: 36px;
+  justify-content: center;
+
+  @media (max-width: 720px) {
+    gap: 7px;
+  }
 `;
 
 const PlusMinusButton = styled(Button).attrs({ disableRipple: true })`
@@ -77,6 +93,12 @@ const PlusMinusButton = styled(Button).attrs({ disableRipple: true })`
 
     &:hover {
       background-color: #5e5e5e;
+    }
+  }
+
+  @media (max-width: 720px) {
+    && {
+      margin: 6px 2px;
     }
   }
 `;
@@ -107,6 +129,12 @@ const BetValue = styled(Typography)`
     font-weight: 700;
     color: white;
   }
+
+  @media (max-width: 720px) {
+    && {
+      font-size: 16px;
+    }
+  }
 `;
 
 const BetAmountButtons = styled(Box)`
@@ -133,12 +161,20 @@ const RightSection = styled(Box)`
   justify-content: center;
   background-color: #28a909;
   border: 1px solid rgb(176, 176, 176);
-  width: 230px;
-  padding: 0px 12px;
+  width: 100%;
+  padding: 0px 25px;
   height: 87px;
   border-radius: 20px;
   min-width: 100px;
   cursor: pointer;
+   
+  @media (min-width: 1000px) and (max-width: 1300px) {
+  width: 60%;
+}
+
+  @media (max-width: 720px) {
+    width: 100px;
+  }
 `;
 
 const RightCashOut = styled(Box)`
@@ -148,17 +184,29 @@ const RightCashOut = styled(Box)`
   justify-content: center;
   background-color: rgb(182, 123, 13);
   border: 1px solid rgb(176, 176, 176);
-  width: 230px;
-  padding: 0px 12px;
+  width: 100%;
+  padding: 0px 20px;
   height: 87px;
   border-radius: 20px;
   min-width: 100px;
   cursor: pointer;
+
+  @media (min-width: 1000px) and (max-width: 1300px) {
+  width: 60%;
+}
+
+   @media (max-width: 720px) {
+    width: 100px;
+  }
 `;
 
 const BetText = styled.div`
   color: white;
   font-size: 23px;
+
+  @media (max-width: 720px) {
+    font-size: 18px;
+  }
 `;
 
 const CashText = styled.div`
@@ -166,19 +214,22 @@ const CashText = styled.div`
   font-size: 23px;
 `;
 
-const BetAmountText = styled(Typography)`
-  && {
-    color: white;
-    font-size: 23px;
-    margin-top: 4px;
+const BetAmountText = styled.div`
+  color: white;
+  font-size: 23px;
+  margin-top: 4px;
+  @media (max-width: 720px) {
+    font-size: 16px;
   }
 `;
 
-const CashoutAmount = styled(Typography)`
-  && {
-    color: white;
-    font-size: 23px;
-    margin-top: 4px;
+const CashoutAmount = styled.div`
+  color: white;
+  font-size: 23px;
+  margin-top: 4px;
+
+  @media (max-width: 720px) {
+    font-size: 16px;
   }
 `;
 
@@ -189,12 +240,20 @@ const RightCancel = styled.div`
   align-items: center;
   justify-content: center;
   border: 1px solid rgb(176, 176, 176);
-  width: 230px;
-  padding: 0px 12px;
+  width: 100%;
+  padding: 0px 20px;
   height: 87px;
   border-radius: 20px;
   min-width: 100px;
   cursor: pointer;
+
+  @media (min-width: 1000px) and (max-width: 1300px) {
+  width: 60%;
+}
+
+   @media (max-width: 720px) {
+    width: 100px;
+  }
 `;
 
 const RightWaiting = styled.div`
@@ -261,81 +320,93 @@ interface GraphProps {
   roundStart: boolean;
   isPlaneOff: boolean;
 }
+type Cashout = {
+  cashOutAmount: number;
+};
 
-const BetPlane: React.FC<GraphProps> = ({
-  roundStart: loading,
-  isPlaneOff,
-}) => {
+const BetPlane: React.FC = () => {
+  const { gameState } = useGameContext();
+  const { status, roundStart, isPlaneOff, multiplier, roundId } = gameState;
+  const { addToBalance } = useBalance();
+  const { UserName } = UserData;
+  const [activeTab, setActiveTab] = useState(0);
+
   const [bets, setBets] = useState([
     {
       betValue: 10.0,
       isBetPlaced: false,
       betAfterLoading: false,
       cashoutValue: 10.0,
+      hasCashedOut: false,
     },
     {
       betValue: 10.0,
       isBetPlaced: false,
       betAfterLoading: false,
       cashoutValue: 10.0,
+      hasCashedOut: false,
     },
   ]);
-  const cashoutIntervals = useRef<(NodeJS.Timeout | null)[]>([null, null]);
-  const [activeTab, setActiveTab] = useState(0);
-  const { addToBalance } = useBalance();
+
+  const [cashoutsState, setCashoutsState] = useState<Cashout[]>([]);
 
   const handleBetClick = (index: number) => {
+    const betAmount = bets[index].betValue;
+
     setBets((prev) =>
       prev.map((bet, i) =>
         i === index
-          ? !loading
-            ? { ...bet, betAfterLoading: true } // Mark for the next round
+          ? !roundStart
+            ? { ...bet, betAfterLoading: true }
             : { ...bet, isBetPlaced: true, cashoutValue: bet.betValue }
           : bet
       )
     );
-  
-    // Save to localStorage if waiting for the next round
-    if (!loading) {
+
+    if (!roundStart) {
       localStorage.setItem(
         `prevBet${index + 1}`,
-        JSON.stringify({ isPrevBet: true, betAmount: bets[index].betValue })
+        JSON.stringify({ isPrevBet: true, betAmount: betAmount })
       );
     }
-  };
-  
 
+    // **Deduct balance immediately when placing a bet**
+    addToBalance(-betAmount);
+  };
 
   useEffect(() => {
-    if (loading) {
+    if (roundStart) {
       const prevBet1 = JSON.parse(localStorage.getItem("prevBet1") || "null");
       const prevBet2 = JSON.parse(localStorage.getItem("prevBet2") || "null");
-  
+
       setBets([
         {
           betValue: prevBet1?.isPrevBet ? prevBet1.betAmount : 10.0,
           isBetPlaced: prevBet1?.isPrevBet ? true : false,
           betAfterLoading: false,
           cashoutValue: prevBet1?.isPrevBet ? prevBet1.betAmount : 10.0,
+          hasCashedOut: false,
         },
         {
           betValue: prevBet2?.isPrevBet ? prevBet2.betAmount : 10.0,
           isBetPlaced: prevBet2?.isPrevBet ? true : false,
           betAfterLoading: false,
           cashoutValue: prevBet2?.isPrevBet ? prevBet2.betAmount : 10.0,
+          hasCashedOut: false,
         },
       ]);
-  
-      // Remove the stored bets after they are used
+
       if (prevBet1?.isPrevBet) localStorage.removeItem("prevBet1");
       if (prevBet2?.isPrevBet) localStorage.removeItem("prevBet2");
     }
-  }, [loading]);
-  
-  
+  }, [roundStart]);
 
+  // Function to cancel a bet and return balance
   const handleCancelClick = (index: number) => {
-    clearInterval(cashoutIntervals.current[index]!);
+    if (bets[index].isBetPlaced) {
+      addToBalance(bets[index].betValue); // Return bet amount
+    }
+
     setBets((prev) =>
       prev.map((bet, i) =>
         i === index
@@ -350,84 +421,146 @@ const BetPlane: React.FC<GraphProps> = ({
     );
   };
 
+  useEffect(() => {
+    const savedBets = JSON.parse(localStorage.getItem("bets") || "null");
+
+    if (savedBets) {
+      setBets(savedBets.filter((bet: any) => bet.isBetPlaced)); // Only restore placed bets
+    }
+  }, []);
+
   const handleCashOutClick = (index: number) => {
     const amountWon = bets[index].cashoutValue;
     toast.success(`You won ${amountWon.toFixed(2)} INR 🎉`);
+    addToBalance(amountWon);
 
-    addToBalance(amountWon); // Update balance in context
-
-    clearInterval(cashoutIntervals.current[index]!);
     setBets((prev) =>
-      prev.map((bet, i) => (i === index ? { ...bet, isBetPlaced: false } : bet))
+      prev.map((bet, i) =>
+        i === index ? { ...bet, isBetPlaced: false, hasCashedOut: true } : bet
+      )
     );
   };
-  
+
+  //  Capture bets at status 3 and initialize cashouts with 0
   useEffect(() => {
-    if (!loading) {
-      setTimeout(() => {
-        // Clear previous intervals before starting new ones
-        cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
-        cashoutIntervals.current = [];
-  
-        bets.forEach((bet, index) => {
-          if (!isPlaneOff && bet.isBetPlaced) {
-            const interval = setInterval(() => {
-              setBets((prev) =>
-                prev.map((b, i) =>
-                  i === index ? { ...b, cashoutValue: b.cashoutValue + 0.01 } : b
-                )
-              );
-            }, 100);
-  
-            // Store interval reference
-            cashoutIntervals.current[index] = interval;
-          }
-        });
-      }, 1000); // 1-second delay before starting intervals
+    if (status === 3) {
+      const placedBets = bets
+        .filter((bet) => bet.isBetPlaced)
+        .map((bet) => ({
+          cashOutAmount: 0, // Initialize with 0
+        }));
+
+      if (placedBets.length > 0) {
+        console.log(
+          JSON.stringify({
+            roundId,
+            UserName,
+            bets: placedBets.map((_, index) => ({
+              betValue: bets[index]?.betValue ?? 0,
+            })),
+          })
+        );
+
+        setCashoutsState(placedBets);
+      }
     }
-  
-    return () => {
-      // Cleanup function only when the component unmounts
-      cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
-      cashoutIntervals.current = [];
-    };
-  }, [loading, isPlaneOff]); // Removed 'bets' from dependencies
-  
-  
-  
+  }, [status]);
+
+  //  Update cashouts dynamically during gameplay
+  useEffect(() => {
+    setCashoutsState((prevCashouts) =>
+      prevCashouts.map((cashout, index) => ({
+        cashOutAmount: bets[index]?.cashoutValue ?? cashout.cashOutAmount, // Keep updating live cashout values
+      }))
+    );
+  }, [bets]);
+
+  // At status 4, finalize cashouts (set losers to 0, keep winners)
+  useEffect(() => {
+    if (status === 4 && cashoutsState.length > 0) {
+      const finalCashouts = cashoutsState.map((cashout, index) => ({
+        cashOutAmount: bets[index]?.hasCashedOut
+          ? bets[index]?.cashoutValue
+          : 0, // Check hasCashedOut instead
+      }));
+
+      console.log(
+        JSON.stringify({
+          roundId,
+          userName: UserName,
+          cashouts: finalCashouts,
+        })
+      );
+
+      setCashoutsState(finalCashouts); // Update final values
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (status === 3 && !isPlaneOff) {
+      setBets((prev) => {
+        const updatedBets = prev.map((bet) =>
+          bet.isBetPlaced
+            ? {
+                ...bet,
+                cashoutValue: parseFloat(
+                  (
+                    bet.betValue +
+                    (bet.betValue * (multiplier - 1)) / 10
+                  ).toFixed(2)
+                ),
+              }
+            : bet
+        );
+
+        // Save bets to localStorage
+        localStorage.setItem("bets", JSON.stringify(updatedBets));
+
+        return updatedBets;
+      });
+    }
+  }, [status, multiplier, isPlaneOff]);
 
   useEffect(() => {
     if (isPlaneOff) {
-      cashoutIntervals.current.forEach((interval) => clearInterval(interval!));
-      setBets((prev) =>
-        prev.map((bet, index) => {
-          if (bet.isBetPlaced) {
-            // toast.error(`Bet ${index + 1} Lost ❌`);
-          }
-          return { ...bet, isBetPlaced: false, betAfterLoading: false }; // Reset the bet state
-        })
+      setCashoutsState((prevCashouts) =>
+        prevCashouts.map((cashout, index) => ({
+          cashOutAmount: bets[index]?.hasCashedOut ? cashout.cashOutAmount : 0, // ❌ Issue: hasCashedOut does not exist
+        }))
       );
+
+      // Reset bets when the plane is off
+      setBets((prev) =>
+        prev.map((bet) => ({
+          ...bet,
+          isBetPlaced: false,
+          betAfterLoading: false,
+          cashoutValue: bet.betValue, // Reset to default bet value
+          hasCashedOut: false, // ❌ Issue: hasCashedOut does not exist in state
+        }))
+      );
+
+      // Clear localStorage to prevent old bets from persisting
+      localStorage.removeItem("bets");
     }
   }, [isPlaneOff]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!roundStart) {
       setBets((prevBets) =>
-        prevBets.map((bet) => {
-          if (bet.betAfterLoading) {
-            console.log(`Automatically placing bet of ${bet.betValue} INR`);
-            return {
-              ...bet,
-              isBetPlaced: true,
-              betAfterLoading: false,
-              cashoutValue: bet.betValue,
-            };
-          }
-          return bet;
-        })
+        prevBets.map((bet) =>
+          bet.betAfterLoading
+            ? {
+                ...bet,
+                isBetPlaced: true,
+                betAfterLoading: false,
+                cashoutValue: bet.betValue,
+              }
+            : bet
+        )
       );
     }
-  }, [loading]);
+  }, [roundStart]);
 
   return (
     <BetPanelContainer>
@@ -495,7 +628,7 @@ const BetPlane: React.FC<GraphProps> = ({
                   bet.betAfterLoading
                     ? () => handleCancelClick(index)
                     : bet.isBetPlaced
-                    ? loading === false && isPlaneOff === false
+                    ? status === 3 && !isPlaneOff
                       ? () => handleCashOutClick(index)
                       : () => handleCancelClick(index)
                     : () => handleBetClick(index)
@@ -506,9 +639,7 @@ const BetPlane: React.FC<GraphProps> = ({
                     <p style={{ color: "#A6A2AD" }}>Waiting for next round</p>
                     <WaitingCancelText>CANCEL</WaitingCancelText>
                   </RightWaiting>
-                ) : loading === false &&
-                  isPlaneOff === false &&
-                  bet.isBetPlaced ? (
+                ) : status === 3 && !isPlaneOff && bet.isBetPlaced ? (
                   <RightCashOut>
                     <CashText>CASH OUT</CashText>
                     <CashoutAmount>
@@ -534,5 +665,4 @@ const BetPlane: React.FC<GraphProps> = ({
     </BetPanelContainer>
   );
 };
-
 export default BetPlane;

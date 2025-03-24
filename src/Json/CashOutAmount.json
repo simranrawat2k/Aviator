@@ -1,0 +1,9 @@
+{
+    "roundId": "67890",
+    "userName": "JohnDoe",
+    "cashouts": [
+      { "cashOutAmount": 300 },
+      { "cashOutAmount": 500 }
+    ]
+  }
+  

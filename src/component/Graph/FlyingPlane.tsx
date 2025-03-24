@@ -59,7 +59,7 @@ const FlyingKite: React.FC = () => {
     kiteImg.src = KiteImage;
   
     kiteImg.onload = () => {
-      console.log("Kite Image Loaded");
+      
   
       // Clear any existing timeout
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
