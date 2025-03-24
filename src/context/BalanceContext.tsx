@@ -10,7 +10,7 @@ const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 export const BalanceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [balance, setBalance] = useState<number>(() => {
     const savedBalance = localStorage.getItem("balance");
-    return savedBalance ? parseFloat(savedBalance) : 1000;
+    return savedBalance ? 500 : 1000;
   });
 
   useEffect(() => {

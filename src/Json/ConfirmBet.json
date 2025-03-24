@@ -1,9 +1,6 @@
 {
-    "roundId": "12345",
-    "UserName": "JohnDoe",
-    "bets": [
-      { "betValue": 100 },
-      { "betValue": 200 }
-    ]
+  "roundId": "12345",
+  "UserName": "JohnDoe",
+  "betValue1": 100,
+  "betValue2": 200
 }
-  

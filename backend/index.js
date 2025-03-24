@@ -6,6 +6,9 @@ const { Server } = require("ws");
 const app = express();
 app.use(cors());
 
+app.use(express.json()); // Middleware to parse JSON body
+const betRoutes = require("./routes/bets");
+
 const server = http.createServer(app);
 const wss = new Server({ server });
 
@@ -92,6 +95,9 @@ app.get("/", (req, res) => {
     res.send("Server is running!");
 });
 
+app.use("/api/bets", betRoutes);
+
+
 
 // Start the backend server
 const PORT = process.env.PORT || 8000;
@@ -100,10 +106,3 @@ server.listen(PORT, () => {
     console.log(`WebSocket server started on ws://localhost:${PORT}`);
 });
 
-
-//WebSocket Client to Check Updates
-// const ws = new WebSocket("ws://localhost:8000");
-
-// ws.onmessage = (event) => {
-//     console.log("Received:", JSON.parse(event.data));
-// };

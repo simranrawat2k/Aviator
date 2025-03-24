@@ -1,0 +1,18 @@
+[
+  {
+    "roundId": 1742833993363,
+    "UserName": "test123",
+    "betValue2": 10
+  },
+  {
+    "roundId": 1742834035557,
+    "UserName": "test123",
+    "betValue1": 10,
+    "betValue2": 10
+  },
+  {
+    "roundId": 1742836193583,
+    "UserName": "test123",
+    "betValue1": 10
+  }
+]
