@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useBalance } from "../context/BalanceContext";
 import { useGameContext } from "../context/GameContext";
 import UserData from "../Json/UserData.json";
+import { useUI } from "../context/uiContext";
 
 const BetPanelContainer = styled(Box)`
   display: flex;
@@ -48,15 +49,15 @@ const BetOneInsideContainer = styled(Box)`
   justify-content: center;
   align-items: center;
   gap: 20px;
-  width:100%;
+  width: 100%;
 `;
 
 const LeftSection = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: 0px;
-  width:30%;
-  margin-right:40px;
+  width: 30%;
+  margin-right: 40px;
 
   @media (max-width: 720px) {
     width: 45%;
@@ -167,10 +168,10 @@ const RightSection = styled(Box)`
   border-radius: 20px;
   min-width: 100px;
   cursor: pointer;
-   
+
   @media (min-width: 1000px) and (max-width: 1300px) {
-  width: 60%;
-}
+    width: 60%;
+  }
 
   @media (max-width: 720px) {
     width: 100px;
@@ -192,10 +193,10 @@ const RightCashOut = styled(Box)`
   cursor: pointer;
 
   @media (min-width: 1000px) and (max-width: 1300px) {
-  width: 60%;
-}
+    width: 60%;
+  }
 
-   @media (max-width: 720px) {
+  @media (max-width: 720px) {
     width: 100px;
   }
 `;
@@ -248,10 +249,10 @@ const RightCancel = styled.div`
   cursor: pointer;
 
   @media (min-width: 1000px) and (max-width: 1300px) {
-  width: 60%;
-}
+    width: 60%;
+  }
 
-   @media (max-width: 720px) {
+  @media (max-width: 720px) {
     width: 100px;
   }
 `;
@@ -327,9 +328,11 @@ type Cashout = {
 const BetPlane: React.FC = () => {
   const { gameState } = useGameContext();
   const { status, roundStart, isPlaneOff, multiplier, roundId } = gameState;
-  const { balance, addToBalance } = useBalance();
-  const { UserName } = UserData;
+  // const { balance, addToBalance } = useBalance();
+  const { userData } = useUI(); // Get user data from UIContext
+  const userName = userData?.UserName || "Guest"; // Default to "Guest" if no username
   const [activeTab, setActiveTab] = useState(0);
+  const { amount, updateAmount} = useBalance();
 
   const [bets, setBets] = useState([
     {
@@ -352,11 +355,12 @@ const BetPlane: React.FC = () => {
 
   const handleBetClick = (index: number) => {
     const betAmount = bets[index].betValue;
-     // Check if the balance is enough
-  if (balance <= 0 || balance < betAmount) {
-    toast.error("Not Enough Balance"); // Show toast message
-    return; // Stop execution
-  }
+
+     // Check if the amount is enough
+     if (amount <= 0 || amount < betAmount) {
+      toast.error("Not Enough Balance"); // Show toast message
+      return; // Stop execution
+    }
 
     setBets((prev) =>
       prev.map((bet, i) =>
@@ -375,8 +379,8 @@ const BetPlane: React.FC = () => {
       );
     }
 
-    // **Deduct balance immediately when placing a bet**
-    addToBalance(-betAmount);
+    //  **Deduct balance immediately when placing a bet**
+    updateAmount(-betAmount);
   };
 
   useEffect(() => {
@@ -409,8 +413,7 @@ const BetPlane: React.FC = () => {
   // Function to cancel a bet and return balance
   const handleCancelClick = (index: number) => {
     if (!bets[index]) return;
-      addToBalance(bets[index].betValue); // Return bet amount
-    
+    updateAmount(bets[index].betValue); // Return bet amount
 
     setBets((prev) =>
       prev.map((bet, i) =>
@@ -436,78 +439,113 @@ const BetPlane: React.FC = () => {
 
   const handleCashOutClick = (index: number) => {
     const bet = bets[index]; // Get the bet that was cashed out
-  const amountWon = bet.cashoutValue; // Cashout amount
-  const betValue = bet.betValue; // Original bet amount
+    const amountWon = bet.cashoutValue; // Cashout amount
+    const betValue = bet.betValue; // Original bet amount
 
-  // Show success toast
-  toast.success(`You won ${amountWon.toFixed(2)} INR 🎉`);
+    // Show success toast
+    toast.success(`You won ${amountWon.toFixed(2)} INR 🎉`);
 
-  // Add winnings to balance
-  addToBalance(amountWon);
+    // Add winnings to balance
+    updateAmount(amountWon);
 
-  // Update bet state to mark as cashed out
-  setBets((prev) =>
-    prev.map((b, i) =>
-      i === index ? { ...b, isBetPlaced: false, hasCashedOut: true } : b
-    )
-  );
+    // Update bet state to mark as cashed out
+    setBets((prev) =>
+      prev.map((b, i) =>
+        i === index ? { ...b, isBetPlaced: false, hasCashedOut: true } : b
+      )
+    );
 
-  // Dynamically set the key (cashOutAmount1, cashOutAmount2, etc.)
-  const cashoutKey = `cashOutAmount${index + 1}`;
+    // Determine the correct bet key (betValue1, betValue2)
+    const betKey = `betValue${index + 1}`;
+    const cashoutKey = `cashOutAmount${index + 1}`;
 
-  // Prepare the JSON payload
-  const cashoutData = {
-    roundId,
-    userName: UserName,
-    betValue,  // Include bet value
-    [cashoutKey]: amountWon // Dynamic key
-  };
+    // Prepare the JSON payload
+    const cashoutData = {
+        roundId,
+        userName: userName,
+        [betKey]: betValue, // Only include the bet that is being cashed out
+        [cashoutKey]: amountWon, // Dynamic cashout key
+    };
 
-  console.log("Cashout JSON:", JSON.stringify(cashoutData));
-  };
+    console.log("Cashout JSON:", JSON.stringify(cashoutData));
+
+    // Send the cashout data to the backend
+    fetch("http://localhost:8000/api/cashout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cashoutData),
+    })
+    .then((res) => res.json())
+    .then((data) => console.log("API Response:", data))
+    .catch((err) => console.error("API Error:", err));
+};
+
+
+
 
   //  Capture bets at status 3 and initialize cashouts with 0
   useEffect(() => {
     if (status === 3) {
-      const placedBets = bets
-        .map((bet, index) => ({
-          originalIndex: index + 1, // Store 1-based index
-          cashOutAmount: 0,
-          betValue: bet.isBetPlaced ? bet.betValue : null, // Store betValue only if placed
-        }))
-        .filter((bet) => bet.betValue !== null); // Remove unplaced bets
-  
-      if (placedBets.length > 0) {
-        const betValues = placedBets.reduce<Record<string, number>>((acc, bet) => {
-          acc[`betValue${bet.originalIndex}`] = bet.betValue ?? 0; // Maintain original index
-          return acc;
-        }, {});
-  
-        const betData = {
-          roundId,
-          UserName,
-          ...betValues,
-      };
+        const placedBets = bets
+            .map((bet, index) => ({
+                originalIndex: index + 1, // Store 1-based index
+                cashOutAmount: 0,
+                betValue: bet.isBetPlaced ? bet.betValue : null, // Store betValue only if placed
+            }))
+            .filter((bet) => bet.betValue !== null); // Remove unplaced bets
 
-      console.log("Bet Data:", JSON.stringify(betData));
-  
-      // Send data to backend
-    //   fetch("http://localhost:8000/api/bets", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(betData),
-    // })
-    // .then((res) => res.json())
-    // .then((data) => console.log("API Response:", data))
-    // .catch((err) => console.error("API Error:", err));
+        if (placedBets.length > 0) {
+            const betValues = placedBets.reduce<Record<string, number>>(
+                (acc, bet) => {
+                    acc[`betValue${bet.originalIndex}`] = bet.betValue ?? 0; // Maintain original index
+                    return acc;
+                },
+                {}
+            );
 
 
-        setCashoutsState(placedBets.map(() => ({ cashOutAmount: 0 }))); // Update state
-      }
+
+        //      // Calculate TotalBetValue only when there are 2 or more bets
+        //      const totalBetValue = placedBets.length > 1 
+        //      ? placedBets.reduce((sum, bet) => sum + (bet.betValue ?? 0), 0) 
+        //      : undefined;
+
+        //  const betData = {
+        //      roundId,
+        //      userName: UserName,
+        //      ...betValues,
+        //      ...(totalBetValue !== undefined && { TotalBetValue: totalBetValue }) // Add only if 2+ bets
+        //  };
+
+
+
+            // Calculate TotalBetValue (sum of all bet values)
+            const TotalBetValue = placedBets.reduce((sum, bet) => sum + (bet.betValue ?? 0), 0);
+
+            const betData = {
+                roundId,
+                userName: userName,
+                ...betValues,
+                TotalBetValue, // Add total bet value
+            };
+
+            console.log("Bet Data:", JSON.stringify(betData));
+
+            // Send data to backend
+            fetch("http://localhost:8000/api/bets", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(betData),
+            })
+            .then((res) => res.json())
+            .then((data) => console.log("API Response:", data))
+            .catch((err) => console.error("API Error:", err));
+
+            setCashoutsState(placedBets.map(() => ({ cashOutAmount: 0 }))); // Update state
+        }
     }
-  }, [status]);
-  
-  
+}, [status]);
+
 
   //  Update cashouts dynamically during gameplay
   useEffect(() => {
@@ -517,30 +555,6 @@ const BetPlane: React.FC = () => {
       }))
     );
   }, [bets]);
-
- 
-  // useEffect(() => {
-  //   if (status === 4) {
-  //     const validBets = bets.filter((bet) => bet); // Ensure only placed bets are considered
-  
-  //     if (validBets.length === 0) return; // Exit early if no bets are placed
-  
-  //     validBets.forEach((bet, index) => {
-  //       if (!bet.hasCashedOut) { // Only process non-cashed-out bets
-  //         const cashoutData = {
-  //           roundId,
-  //           userName: UserName,
-  //           [`cashOutAmount${index + 1}`]: 0 // Dynamic key for non-cashed-out players
-  //         };
-  
-  //         console.log(JSON.stringify(cashoutData));
-  //       }
-  //     });
-  //   }
-  // }, [status]);
-  
-
-
 
   useEffect(() => {
     if (status === 3 && !isPlaneOff) {
@@ -574,16 +588,30 @@ const BetPlane: React.FC = () => {
       if (validBets.length === 0) return; // No bets placed, no JSON should log
   
       validBets.forEach((bet, index) => {
-        if (!bet.hasCashedOut) { // Only log for non-cashed-out bets
+        if (!bet.hasCashedOut) {
+          // Only log for non-cashed-out bets
           const betIndex = bets.indexOf(bet) + 1; // Get actual bet position
+          const betKey = `betValue${betIndex}`; // Ensure correct bet key
+          const cashoutKey = `cashOutAmount${betIndex}`; // Dynamic cashout key
   
           const cashoutData = {
             roundId,
-            userName: UserName,
-            [`cashOutAmount${betIndex}`]: 0, // Correct key mapping
+            userName: userName,
+            [betKey]: bet.betValue, // Include correct betValue key
+            [cashoutKey]: 0, // Correct key mapping
           };
   
           console.log(JSON.stringify(cashoutData));
+  
+          // 🔴 Send API request to /api/cashout
+          fetch("http://localhost:8000/api/cashout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cashoutData),
+          })
+            .then((res) => res.json())
+            .then((data) => console.log("Cashout API Response:", data))
+            .catch((err) => console.error("API Error:", err));
         }
       });
   
@@ -609,7 +637,6 @@ const BetPlane: React.FC = () => {
       localStorage.removeItem("bets");
     }
   }, [isPlaneOff]);
-  
   
 
   useEffect(() => {

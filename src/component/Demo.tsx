@@ -282,7 +282,7 @@ const BetPlane: React.FC<GraphProps> = ({
   ]);
   const cashoutIntervals = useRef<(NodeJS.Timeout | null)[]>([null, null]);
   const [activeTab, setActiveTab] = useState(0);
-  const { addToBalance } = useBalance();
+  // const { addToBalance } = useBalance();
 
   const handleBetClick = (index: number) => {
     setBets((prev) =>
@@ -354,7 +354,7 @@ const BetPlane: React.FC<GraphProps> = ({
     const amountWon = bets[index].cashoutValue;
     toast.success(`You won ${amountWon.toFixed(2)} INR 🎉`);
 
-    addToBalance(amountWon); // Update balance in context
+    // addToBalance(amountWon); // Update balance in context
 
     clearInterval(cashoutIntervals.current[index]!);
     setBets((prev) =>

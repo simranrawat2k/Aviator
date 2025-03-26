@@ -9,6 +9,8 @@ app.use(cors());
 app.use(express.json()); // Middleware to parse JSON body
 const betRoutes = require("./routes/bets");
 
+const cashoutRoutes = require("./routes/cashout");
+
 const server = http.createServer(app);
 const wss = new Server({ server });
 
@@ -96,7 +98,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/bets", betRoutes);
-
+app.use("/api/cashout", cashoutRoutes);
 
 
 // Start the backend server

@@ -1,0 +1,62 @@
+[
+  {
+    "roundId": 1742905958326,
+    "userName": "test123",
+    "betValue2": 10,
+    "cashOutAmount2": 10.17
+  },
+  {
+    "roundId": 1742905980661,
+    "userName": "test123",
+    "betValue1": 100,
+    "cashOutAmount1": 101.4
+  },
+  {
+    "roundId": 1742905996442,
+    "userName": "test123",
+    "betValue1": 100,
+    "cashOutAmount1": 100.8
+  },
+  {
+    "roundId": 1742905996442,
+    "userName": "test123",
+    "betValue2": 10,
+    "cashOutAmount2": 10.21
+  },
+  {
+    "roundId": 1742906544658,
+    "userName": "test123",
+    "betValue1": 10,
+    "cashOutAmount1": 0
+  },
+  {
+    "roundId": 1742906544658,
+    "userName": "test123",
+    "betValue2": 10,
+    "cashOutAmount2": 0
+  },
+  {
+    "roundId": 1742906581949,
+    "userName": "test123",
+    "betValue1": 12,
+    "cashOutAmount1": 0
+  },
+  {
+    "roundId": 1742906606200,
+    "userName": "test123",
+    "betValue1": 10,
+    "cashOutAmount1": 10.11
+  },
+  {
+    "roundId": 1742955405968,
+    "userName": "test456",
+    "betValue1": 10,
+    "cashOutAmount1": 10.04
+  },
+  {
+    "roundId": 1742955405968,
+    "userName": "test456",
+    "betValue2": 10,
+    "cashOutAmount2": 0
+  }
+]

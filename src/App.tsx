@@ -7,16 +7,19 @@ import MovingDots from "./component/Demo";
 import AudioPlayer from "./component/AudioPlayer";
 import { BalanceProvider } from "./context/BalanceContext";
 import { GameProvider } from "./context/GameContext"; 
+import { UIProvider } from "./context/uiContext";
 
 function App() {
   return (
-    <GameProvider> 
-      <BalanceProvider>
-        <AudioPlayer />
-        <Header />
-        <Main />
-      </BalanceProvider>
-    </GameProvider>
+    <UIProvider> 
+      <GameProvider> 
+        <BalanceProvider>
+          <AudioPlayer />
+          <Header />
+          <Main />
+        </BalanceProvider>
+      </GameProvider>
+    </UIProvider>
   );
 }
 

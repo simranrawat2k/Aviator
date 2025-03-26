@@ -1,34 +1,45 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
+import { useUI } from "./uiContext";
 
+// Define context type
 interface BalanceContextType {
-  balance: number;
-  addToBalance: (amount: number) => void;
+  amount: number;
+  updateAmount: (newAmount: number) => void;
 }
 
+// Create Context
 const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
-export const BalanceProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [balance, setBalance] = useState<number>(() => {
-    const savedBalance = localStorage.getItem("balance");
-    return savedBalance ? 500 : 1000;
-  });
+// Provider Component
+export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { userData } = useUI(); // Get user data from UIContext
+  const [amount, setAmount] = useState<number>(0);
 
+  // Calculate initial amount when userData is available
   useEffect(() => {
-    localStorage.setItem("balance", balance.toFixed(2)); // Store as string with 2 decimal places
-  }, [balance]);
+    if (userData) {
+      const initialAmount =
+        userData.Exposure < 0
+          ? (userData.Balance || 0) - Math.abs(userData.Exposure || 0)
+          : userData.Balance || 0;
+      setAmount(initialAmount);
+    }
+  }, [userData]);
 
-  const addToBalance = (amount: number) => {
-    setBalance((prev) => parseFloat((prev + amount).toFixed(2))); // Ensure 2 decimal places
+  // Function to update amount
+  const updateAmount = (value: number) => {
+    setAmount((prevAmount) => prevAmount + value);
   };
 
   return (
-    <BalanceContext.Provider value={{ balance, addToBalance }}>
+    <BalanceContext.Provider value={{ amount, updateAmount }}>
       {children}
     </BalanceContext.Provider>
   );
 };
 
-export const useBalance = (): BalanceContextType => {
+// Custom hook to use BalanceContext
+export const useBalance = () => {
   const context = useContext(BalanceContext);
   if (!context) {
     throw new Error("useBalance must be used within a BalanceProvider");

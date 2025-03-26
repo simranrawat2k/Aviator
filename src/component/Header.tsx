@@ -1,18 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import aviatorLogo from "../assets/aviator-logo.cafbd29233306bf7.svg"
+import aviatorLogo from "../assets/aviator-logo.cafbd29233306bf7.svg";
 import MenuIcon from "@mui/icons-material/Menu";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useBalance } from "../context/BalanceContext";
-import UserData from "../Json/UserData.json"
-
+import { useUI } from "../context/uiContext";
 
 const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #1B1C1D;
+  background-color: #1b1c1d;
   padding: 0px 10px;
   height: 50px;
 `;
@@ -32,8 +31,8 @@ const Logo = styled.img`
 `;
 
 const HowToPlayButton = styled.button`
-  background-color: #E69308;
-  color: #5F3D14;
+  background-color: #e69308;
+  color: #5f3d14;
   border: none;
   padding: 2px 8px;
   border-radius: 20px;
@@ -41,18 +40,17 @@ const HowToPlayButton = styled.button`
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #e69500;
   }
 
   svg {
-
-    fill: #714B0E; 
+    fill: #714b0e;
   }
 
-    @media (max-width: 768px) {
-    background-color: transparent; 
+  @media (max-width: 768px) {
+    background-color: transparent;
     padding: 8px;
     width: 40px;
     height: 40px;
@@ -60,7 +58,7 @@ const HowToPlayButton = styled.button`
     justify-content: center;
 
     svg {
-      fill: #767B85;  
+      fill: #767b85;
     }
   }
 `;
@@ -74,7 +72,7 @@ const RightSection = styled.div`
 const BalanceContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px; 
+  gap: 4px;
   color: #767b85;
   font-weight: bold;
   font-size: 14px;
@@ -83,20 +81,22 @@ const BalanceContainer = styled.div`
 const Separator = styled.div`
   width: 1px;
   height: 24px;
-  background-color:rgb(68, 69, 72);
+  background-color: rgb(68, 69, 72);
 `;
 
 const BalanceBox = styled.span`
-  color: #24A909;
+  color: #24a909;
   font-weight: bold;
   font-size: 18px;
-  margin-left:20px;
+  margin-left: 20px;
 `;
 
 const Header: React.FC = () => {
-  const { balance } = useBalance();
+  const { userData } = useUI();
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { UserName, Balance } = UserData;
+  const { amount } = useBalance();
+
+  console.log("Fetched user data:", userData);
 
   return (
     <HeaderContainer>
@@ -109,12 +109,14 @@ const Header: React.FC = () => {
       </LeftSection>
       <RightSection>
         <BalanceContainer>
-        <span>{UserName}</span> 
-          <BalanceBox>{balance.toFixed(2)}</BalanceBox>
+          <span>{userData?.UserName || "Guest"}</span>
+          <BalanceBox>{amount.toFixed(2)}</BalanceBox>
           <span>INR</span>
         </BalanceContainer>
         <Separator />
-        <MenuIcon style={{ color: "#767B85", fontSize: "28px", cursor: "pointer" }} />
+        <MenuIcon
+          style={{ color: "#767B85", fontSize: "28px", cursor: "pointer" }}
+        />
       </RightSection>
     </HeaderContainer>
   );
