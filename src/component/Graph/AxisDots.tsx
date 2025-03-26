@@ -6,8 +6,37 @@ const AxisDots: React.FC = () => {
   const dotSize = 4;
   const speed = 1.2;
   const interval = 300;
-  const initialSpacingX = 110; // Adjust spacing as needed
   const initialSpacingY = 35;  // Adjust spacing as needed
+  const [leftPosition, setLeftPosition] = useState("0");
+
+  const [initialSpacingX, setSpacingX] = useState(
+    window.innerWidth <= 760 ? 50 : 110
+  );
+
+  useEffect(() => {
+    const updateLeft = () => {
+      const width = window.innerWidth;
+      if (width <= 1450 && width > 1350) setLeftPosition("-2px");
+      else if (width <= 1350 && width > 760) setLeftPosition("-0.5%");
+      else if (width <= 760 && width > 600) setLeftPosition("-1%");
+      else if (width <= 600 && width > 500) setLeftPosition("-1.5%");
+      else if (width <= 500 && width > 300) setLeftPosition("-2%");
+      else setLeftPosition("0");
+    };
+
+    updateLeft(); // Call on mount
+    window.addEventListener("resize", updateLeft);
+    return () => window.removeEventListener("resize", updateLeft);
+  }, []);
+
+  useEffect(() => {
+    const updateSpacing = () => {
+      setSpacingX(window.innerWidth <= 760 ? 50 : 110);
+    };
+
+    window.addEventListener("resize", updateSpacing);
+    return () => window.removeEventListener("resize", updateSpacing);
+  }, []);
 
   const initialDotCountX = Math.ceil(window.innerWidth / initialSpacingX);
   const initialDotCountY = Math.ceil(window.innerHeight / initialSpacingY);
@@ -39,6 +68,7 @@ const AxisDots: React.FC = () => {
 
     const moveDots = () => {
       if (gameState.status === 3 || gameState.status === 4) {
+       
         setDotsX((prev) =>
           prev
             .map((dot) => ({ ...dot, x: dot.x - speed }))
@@ -85,7 +115,7 @@ const AxisDots: React.FC = () => {
       style={{
         position: "absolute",
         top: 0,
-        left: 0,
+        left: leftPosition,
         width: "100%",
         height: "100%",
         overflow: "hidden",

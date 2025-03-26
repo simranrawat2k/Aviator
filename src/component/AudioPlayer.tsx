@@ -1,35 +1,30 @@
-import { useEffect, useState } from "react";
-import aviatorSound from "../assets/aviator-sound.mp3"; 
+import { useEffect } from "react";
+import aviatorSound from "../assets/aviator-sound.mp3";
 
-const AudioPlayer: React.FC = () => {
-  const [isAudioAllowed, setIsAudioAllowed] = useState(false);
+const audio = new Audio(aviatorSound);
+audio.loop = true;
 
+const AudioPlayer: React.FC<{ isPlaying: boolean }> = ({ isPlaying }) => {
   useEffect(() => {
-    const audio = new Audio(aviatorSound);
-    audio.loop = true; 
-
-    const enableAudioOnClick = () => {
+    const playAudio = () => {
       audio.play().catch((err) => console.log("Autoplay blocked:", err));
-      setIsAudioAllowed(true); 
-      document.removeEventListener("click", enableAudioOnClick);
+      document.removeEventListener("click", playAudio);
     };
 
-    document.addEventListener("click", enableAudioOnClick);
-
-    const stopAudio = () => {
+    if (isPlaying) {
+      playAudio(); // Try playing immediately
+      document.addEventListener("click", playAudio); // Ensure autoplay
+    } else {
       audio.pause();
-      audio.currentTime = 0;
-    };
-    window.addEventListener("beforeunload", stopAudio);
+    }
 
     return () => {
-      stopAudio(); 
-      window.removeEventListener("beforeunload", stopAudio);
-      document.removeEventListener("click", enableAudioOnClick);
+      document.removeEventListener("click", playAudio);
+      audio.pause();
     };
-  }, []);
+  }, [isPlaying]);
 
-  return null; 
+  return null;
 };
 
 export default AudioPlayer;

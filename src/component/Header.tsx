@@ -6,6 +6,10 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useBalance } from "../context/BalanceContext";
 import { useUI } from "../context/uiContext";
+import Button from "@mui/material/Button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import { Switch } from "@mui/material";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -28,6 +32,14 @@ const LeftSection = styled.div`
 
 const Logo = styled.img`
   width: 80px;
+
+  @media (max-width: 450px) {
+    width: 72px;
+  }
+
+  @media (max-width: 350px) {
+    width: 50px;
+  }
 `;
 
 const HowToPlayButton = styled.button`
@@ -61,12 +73,22 @@ const HowToPlayButton = styled.button`
       fill: #767b85;
     }
   }
+
+  @media (max-width: 450px) {
+    padding: 5px 0px 0px 0px;
+    width: 20px;
+    height: 20px;
+  }
 `;
 
 const RightSection = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+
+  @media (max-width: 450px) {
+    gap: 5px;
+  }
 `;
 
 const BalanceContainer = styled.div`
@@ -76,6 +98,10 @@ const BalanceContainer = styled.div`
   color: #767b85;
   font-weight: bold;
   font-size: 14px;
+
+  @media (max-width: 350px) {
+    font-size: 12px;
+  }
 `;
 
 const Separator = styled.div`
@@ -89,12 +115,61 @@ const BalanceBox = styled.span`
   font-weight: bold;
   font-size: 18px;
   margin-left: 20px;
+
+  @media (max-width: 450px) {
+    font-size: 16px;
+    margin-left: 5px;
+  }
+
+  @media (max-width: 350px) {
+    font-size: 12px;
+    margin-left: 2px;
+  }
 `;
 
-const Header: React.FC = () => {
+const StyledMenuIcon = styled(MenuIcon)`
+  color: #767b85;
+  font-size: 28px;
+  cursor: pointer;
+
+  @media (max-width: 450px) {
+    font-size: 22px;
+  }
+`;
+
+const CustomSwitch = styled(Switch)({
+  
+  "& .MuiSwitch-switchBase.Mui-checked": {
+    color: "white", // Moving dot color when ON
+  },
+  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
+    backgroundColor: "rgb(47, 254, 0)", // Background when ON
+    border: "2px solid white",
+  },
+  "& .MuiSwitch-track": {
+    backgroundColor: "black", // Background when OFF
+    border: "2px solid white",
+    borderRadius: "20px",
+  },
+  "& .MuiSwitch-thumb": {
+    marginTop: 1, // Adjust to center it properly
+  },
+ 
+});
+
+const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ toggleAudio, isPlaying }) => {
   const { userData } = useUI();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { amount } = useBalance();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   console.log("Fetched user data:", userData);
 
@@ -114,9 +189,52 @@ const Header: React.FC = () => {
           <span>INR</span>
         </BalanceContainer>
         <Separator />
-        <MenuIcon
-          style={{ color: "#767B85", fontSize: "28px", cursor: "pointer" }}
-        />
+
+        <div>
+          <span
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            style={{ cursor: "pointer" }} // Ensures it's clickable
+          >
+            <StyledMenuIcon />
+          </span>
+
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            sx={{
+              "& .MuiPaper-root": {
+                backgroundColor: "#2C2D30", 
+                minWidth: "200px",
+                paddingTop:"0px",
+                paddingBottom:"0px"
+              },
+            }}
+          >
+            <MenuItem
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: "12px",
+                fontWeight: "bold",
+                color: "#AEAEAF",
+                // borderBottom: "1px solid rgb(83, 83, 83)",
+              }}
+            >
+              SOUND
+              <CustomSwitch size="small" checked={isPlaying} onChange={toggleAudio} />
+            </MenuItem>
+          </Menu>
+        </div>
       </RightSection>
     </HeaderContainer>
   );

@@ -17,6 +17,11 @@ const LoaderContainer = styled.div`
 const Propeller = styled(motion.img)`
   width: 150px; 
   height: 150px;
+
+  @media (max-width: 700px) {
+   width: 80px; 
+   height: 80px;
+  }
 `;
 
 const LoadingText = styled.p`
@@ -25,8 +30,16 @@ const LoadingText = styled.p`
   padding:0px;
   margin:20px;
 
-  @media (max-width: 720px) {
-   font-size: 26px;
+  @media (max-width: 768px) {
+   font-size: 28px;
+  }
+
+  @media (max-width: 520px) {
+   font-size: 24px;
+  }
+
+   @media (max-width: 520px) {
+   font-size: 20px;
   }
 `;
 

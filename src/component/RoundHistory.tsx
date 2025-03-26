@@ -15,7 +15,7 @@ const RoundHistoryContainer = styled.div`
 
 const AllHistory = styled.div`
   color: white;
-  height: 100px;
+  height: auto;
   width: 99%;
   position: absolute;
   z-index: 10;
@@ -23,6 +23,18 @@ const AllHistory = styled.div`
   border-radius: 20px;
   top: 0px;
   padding: 10px 0px 10px 15px;
+  
+  @media (max-width: 670px) and (min-width: 480px) {
+    width: 98%;
+  }
+
+   @media (max-width: 480px) and (min-width: 360px) {
+    width: 97%;
+  }
+
+  @media (max-width: 360px) {
+    width: 96%;
+  }
 `;
 
 const HistoryBox = styled.div`
@@ -77,13 +89,11 @@ const MultiplierItem = styled.span<{ value: number }>`
 `;
 
 const RoundHistory: React.FC = () => {
-  const [showAll, setShowAll] = useState(false)
+  const [showAll, setShowAll] = useState(false);
 
   function handleShow() {
-    setShowAll(prev => !prev);
+    setShowAll((prev) => !prev);
   }
-  
-
 
   const multipliers: string[] = [
     "1.00",
@@ -120,39 +130,39 @@ const RoundHistory: React.FC = () => {
 
   return (
     <HistoryBox>
-      {showAll?<AllHistory>
-        <div>Round History</div>
-        <AllItem>
-          {multipliers.map((multiplier, index) => {
-            const value = parseFloat(multiplier);
-            return (
-              <MultiplierItem key={index} value={value}>
-                {multiplier}x
-              </MultiplierItem>
-            );
-          })}
-        </AllItem>
-      </AllHistory>:<RoundHistoryContainer>
-        <MultiplierWrapper>
-          {multipliers.map((multiplier, index) => {
-            const value = parseFloat(multiplier);
-            return (
-              <MultiplierItem key={index} value={value}>
-                {multiplier}x
-              </MultiplierItem>
-            );
-          })}
-        </MultiplierWrapper>
-        
-      </RoundHistoryContainer>}
-      
-      
-      
+      {showAll ? (
+        <AllHistory>
+          <div>Round History</div>
+          <AllItem>
+            {multipliers.map((multiplier, index) => {
+              const value = parseFloat(multiplier);
+              return (
+                <MultiplierItem key={index} value={value}>
+                  {multiplier}x
+                </MultiplierItem>
+              );
+            })}
+          </AllItem>
+        </AllHistory>
+      ) : (
+        <RoundHistoryContainer>
+          <MultiplierWrapper>
+            {multipliers.map((multiplier, index) => {
+              const value = parseFloat(multiplier);
+              return (
+                <MultiplierItem key={index} value={value}>
+                  {multiplier}x
+                </MultiplierItem>
+              );
+            })}
+          </MultiplierWrapper>
+        </RoundHistoryContainer>
+      )}
 
       <HistoryButton onClick={handleShow}>
-          <HistoryIcon />
-          {showAll? <ArrowDropUpIcon/>: <ArrowDropDownIcon />}
-        </HistoryButton>
+        <HistoryIcon />
+        {showAll ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+      </HistoryButton>
     </HistoryBox>
   );
 };

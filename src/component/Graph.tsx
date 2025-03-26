@@ -79,13 +79,15 @@ const Graph: React.FC = () => {
   
 
   return (
-    <Box sx={{ background: "#101011", width: "100%", height: "100%" }}>
+    <Box sx={{ background: "#101011", width: "98%", height: "100%" }}>
       <RoundHistory />
       <GraphBox loading={gameState.status === 1}>
         {gameState.status === 1 ? <Loader /> : <RotatingWheel isRotating={startRotation} />}
         {gameState.status !== 1 && <AxisDots />}
         {gameState.status !== 1 && <FlyingPlane  />}
         {gameState.status !== 1 && <Points />}
+
+        
       </GraphBox>
     </Box>
   );

@@ -43,10 +43,23 @@ const RightSection = styled(Box)`
 const GraphContainer = styled(Box)`
   flex-grow: 1;
   background-color: #101011;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 
   @media (max-width: 1000px) {
     order: 1;
     height:80vh;
+  }
+
+  @media (max-width: 760px) {
+    order: 1;
+    height:70vh;
+  }
+
+  @media (max-width: 600px) {
+    order: 1;
+    height:55vh;
   }
 `;
 

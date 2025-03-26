@@ -37,12 +37,16 @@ const PointsContainer = styled.div<{ endTime: boolean }>`
 `;
 
 const PointsText = styled.div<{ endTime: boolean }>`
-  font-size: 95px;
+  font-size: 100px;
   line-height: 40px;
   font-family: "Inter", sans-serif;
   color: ${({ endTime }) => (endTime ? "#F7001F" : "white")};
   font-weight: bold;
   padding: 10px 20px;
+
+  @media (max-width: 650px){
+   font-size: 65px;
+  }
 `;
 
 const Message = styled.div`
@@ -51,6 +55,11 @@ const Message = styled.div`
   color: white;
   margin-bottom: 30px;
   font-weight: normal;
+
+   @media (max-width: 650px){
+   font-size: 28px;
+  }
+
 `;
 
 interface GraphProps {
