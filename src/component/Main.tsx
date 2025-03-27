@@ -21,12 +21,15 @@ const Sidebar = styled(Box)`
   width: 26%;
   background-color: #101011;
   color: white;
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
 
   @media (max-width: 1000px) {
     width: 100%;
     order: 3;
-    padding-top:30px;
+    padding-top: 30px;
   }
 `;
 
@@ -43,23 +46,23 @@ const RightSection = styled(Box)`
 const GraphContainer = styled(Box)`
   flex-grow: 1;
   background-color: #101011;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   @media (max-width: 1000px) {
     order: 1;
-    height:80vh;
+    height: 80vh;
   }
 
   @media (max-width: 760px) {
     order: 1;
-    height:70vh;
+    height: 70vh;
   }
 
   @media (max-width: 600px) {
     order: 1;
-    height:55vh;
+    height: 55vh;
   }
 `;
 
@@ -69,6 +72,7 @@ const BetPanel = styled(Box)`
   padding: 2px;
   display: flex;
   flex-direction: column;
+  padding-top: 10px;
 
   @media (max-width: 1000px) {
     order: 2;
@@ -79,7 +83,6 @@ const BetPanel = styled(Box)`
   @media (max-width: 700px) {
     flex-direction: row;
     justify-content: center;
-    
   }
 `;
 
@@ -102,7 +105,6 @@ const Main: React.FC = () => {
         // Generate a random float between 0.0 and 10.0 seconds
         // write 20 to generate points between 0.00 to 3.00
         const randomFlyOffTime = Math.random() * 10;
-      
 
         planeTimer = setTimeout(() => {
           setIsPlaneOff(true);
@@ -133,7 +135,7 @@ const Main: React.FC = () => {
           <Graph />
         </GraphContainer>
         <BetPanel>
-          <BetPlane/>
+          <BetPlane />
         </BetPanel>
       </RightSection>
     </Container>

@@ -16,6 +16,33 @@ const BetPanelContainer = styled(Box)`
   @media (max-width: 700px) {
     flex-direction: column;
     gap: 20px;
+    width: 99%;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 600px) {
+    margin-left: 3px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 560px) {
+    margin-left: 0px;
+    margin-top: 10px;
+  }
+
+  @media (max-width: 500px) {
+    margin-left: -4px;
+    width: 96%;
+  }
+
+  @media (max-width: 500px) {
+    margin-left: -7px;
+    width: 94%;
+  }
+
+  @media (max-width: 360px) {
+    margin-left: -13px;
+    width: 93%;
   }
 `;
 
@@ -42,6 +69,22 @@ const BetOneContainer = styled(Box)`
   border-radius: 12px;
   width: 93%;
   gap: 20px;
+    
+
+  @media (max-width: 1400px) and (min-width: 1000px) {
+    width: 88%;
+    margin-left: 2px;
+  }
+
+  @media (max-width: 1000px) and (min-width: 830px) {
+    width: 89%;
+    margin-left: 8px;
+  }
+
+  @media (max-width: 830px) and (min-width: 700px) {
+    width: 85%;
+    margin-left: 12px;
+  }
 `;
 
 const BetOneInsideContainer = styled(Box)`
@@ -50,6 +93,10 @@ const BetOneInsideContainer = styled(Box)`
   align-items: center;
   gap: 20px;
   width: 100%;
+
+  @media (max-width: 360px) {
+    gap: 12px;
+  }
 `;
 
 const LeftSection = styled(Box)`
@@ -58,10 +105,28 @@ const LeftSection = styled(Box)`
   gap: 0px;
   width: 30%;
   margin-right: 40px;
+  @media (max-width: 1400px) and (min-width: 1000px) {
+    width: 48%;
+    margin-right: 0px;
+  }
 
-  @media (max-width: 720px) {
-    width: 45%;
+  @media (max-width: 1000px) and (min-width: 830px) {
+    width: 40%;
+    margin-right: 10px;
+  }
+
+  @media (max-width: 830px) and (min-width: 700px) {
+    width: 48%;
+    margin-right: -10px;
+  }
+
+  @media (max-width: 700px) {
+    width: 140px;
     gap: 10px;
+  }
+
+  @media (max-width: 400px) {
+    margin-right: 0px;
   }
 `;
 
@@ -74,7 +139,7 @@ const BetControls = styled(Box)`
   border-radius: 36px;
   justify-content: center;
 
-  @media (max-width: 720px) {
+  @media (max-width: 700px) {
     gap: 7px;
   }
 `;
@@ -97,7 +162,7 @@ const PlusMinusButton = styled(Button).attrs({ disableRipple: true })`
     }
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 700px) {
     && {
       margin: 6px 2px;
     }
@@ -131,7 +196,7 @@ const BetValue = styled(Typography)`
     color: white;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 700px) {
     && {
       font-size: 16px;
     }
@@ -169,12 +234,22 @@ const RightSection = styled(Box)`
   min-width: 100px;
   cursor: pointer;
 
-  @media (min-width: 1000px) and (max-width: 1300px) {
-    width: 60%;
+  @media (max-width: 1400px) and (min-width: 1000px) {
+    min-width: 40px;
+    width: 72%;
   }
 
-  @media (max-width: 720px) {
-    width: 100px;
+  @media (max-width: 1000px) and (min-width: 830px) {
+    width: 72%;
+  }
+
+  @media (max-width: 830px) and (min-width: 700px) {
+    min-width: 60px;
+    width: 68%;
+  }
+
+  @media (max-width: 700px) {
+    width: calc(100% - 145px);
   }
 `;
 
@@ -192,11 +267,11 @@ const RightCashOut = styled(Box)`
   min-width: 100px;
   cursor: pointer;
 
-  @media (min-width: 1000px) and (max-width: 1300px) {
-    width: 60%;
+  @media (max-width: 1000px) and (min-width: 700px) {
+    width: 72%;
   }
 
-  @media (max-width: 720px) {
+  @media (max-width: 700px) {
     width: 100px;
   }
 `;
@@ -205,22 +280,31 @@ const BetText = styled.div`
   color: white;
   font-size: 23px;
 
-  @media (max-width: 720px) {
-    font-size: 18px;
+  @media (max-width: 520px) {
+    font-size: 20px;
   }
 `;
 
 const CashText = styled.div`
   color: white;
   font-size: 23px;
+
+  @media (max-width: 1000px) and (min-width: 700px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 18px;
+  }
 `;
 
 const BetAmountText = styled.div`
   color: white;
   font-size: 23px;
   margin-top: 4px;
-  @media (max-width: 720px) {
-    font-size: 16px;
+
+  @media (max-width: 520px) {
+    font-size: 20px;
   }
 `;
 
@@ -229,8 +313,12 @@ const CashoutAmount = styled.div`
   font-size: 23px;
   margin-top: 4px;
 
-  @media (max-width: 720px) {
-    font-size: 16px;
+  @media (max-width: 1000px) and (min-width: 700px) {
+    font-size: 18px;
+  }
+
+  @media (max-width: 700px) {
+    font-size: 18px;
   }
 `;
 
@@ -248,12 +336,12 @@ const RightCancel = styled.div`
   min-width: 100px;
   cursor: pointer;
 
-  @media (min-width: 1000px) and (max-width: 1300px) {
-    width: 60%;
+  @media (max-width: 700px) {
+    width: 100px;
   }
 
-  @media (max-width: 720px) {
-    width: 100px;
+  @media (max-width: 1000px) and (min-width: 700px) {
+    width: 72%;
   }
 `;
 
@@ -267,6 +355,10 @@ const RightWaiting = styled.div`
 const CancelText = styled.div`
   color: white;
   font-size: 23px;
+
+  @media (max-width: 520px) {
+    font-size: 18px;
+  }
 `;
 
 const WaitingCancelText = styled.div`
@@ -281,6 +373,10 @@ const WaitingCancelText = styled.div`
   justify-content: center;
   border-radius: 20px;
   cursor: pointer;
+
+  @media (max-width: 1000px) and (min-width: 700px) {
+    width: 72%;
+  }
 `;
 
 const TabsContainer = styled.div`
@@ -328,11 +424,10 @@ type Cashout = {
 const BetPlane: React.FC = () => {
   const { gameState } = useGameContext();
   const { status, roundStart, isPlaneOff, multiplier, roundId } = gameState;
-  // const { balance, addToBalance } = useBalance();
   const { userData } = useUI(); // Get user data from UIContext
   const userName = userData?.UserName || "Guest"; // Default to "Guest" if no username
   const [activeTab, setActiveTab] = useState(0);
-  const { amount, updateAmount} = useBalance();
+  const { amount, updateAmount } = useBalance();
 
   const [bets, setBets] = useState([
     {
@@ -356,8 +451,8 @@ const BetPlane: React.FC = () => {
   const handleBetClick = (index: number) => {
     const betAmount = bets[index].betValue;
 
-     // Check if the amount is enough
-     if (amount <= 0 || amount < betAmount) {
+    // Check if the amount is enough
+    if (amount <= 0 || amount < betAmount) {
       toast.error("Not Enough Balance"); // Show toast message
       return; // Stop execution
     }
@@ -430,10 +525,30 @@ const BetPlane: React.FC = () => {
   };
 
   useEffect(() => {
-    const savedBets = JSON.parse(localStorage.getItem("bets") || "null");
+    const savedBets = JSON.parse(localStorage.getItem("bets") || "[]");
 
-    if (savedBets) {
-      setBets(savedBets.filter((bet: any) => bet.isBetPlaced)); // Only restore placed bets
+    if (savedBets.length > 0) {
+      const placedBets = savedBets.filter((bet: any) => bet.isBetPlaced);
+
+      // If there are no placed bets, use the stored bets as they are
+      setBets(placedBets.length > 0 ? placedBets : savedBets);
+    } else {
+      setBets([
+        {
+          betValue: 10.0,
+          isBetPlaced: false,
+          betAfterLoading: false,
+          cashoutValue: 10.0,
+          hasCashedOut: false,
+        },
+        {
+          betValue: 10.0,
+          isBetPlaced: false,
+          betAfterLoading: false,
+          cashoutValue: 10.0,
+          hasCashedOut: false,
+        },
+      ]);
     }
   }, []);
 
@@ -461,53 +576,48 @@ const BetPlane: React.FC = () => {
 
     // Prepare the JSON payload
     const cashoutData = {
-        roundId,
-        userName: userName,
-        [betKey]: betValue, // Only include the bet that is being cashed out
-        [cashoutKey]: amountWon, // Dynamic cashout key
+      roundId,
+      userName: userName,
+      [betKey]: betValue, // Only include the bet that is being cashed out
+      [cashoutKey]: amountWon, // Dynamic cashout key
     };
 
     console.log("Cashout JSON:", JSON.stringify(cashoutData));
 
     // Send the cashout data to the backend
     fetch("http://localhost:8000/api/cashout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(cashoutData),
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cashoutData),
     })
-    .then((res) => res.json())
-    .then((data) => console.log("API Response:", data))
-    .catch((err) => console.error("API Error:", err));
-};
-
-
-
+      .then((res) => res.json())
+      .then((data) => console.log("API Response:", data))
+      .catch((err) => console.error("API Error:", err));
+  };
 
   //  Capture bets at status 3 and initialize cashouts with 0
   useEffect(() => {
     if (status === 3) {
-        const placedBets = bets
-            .map((bet, index) => ({
-                originalIndex: index + 1, // Store 1-based index
-                cashOutAmount: 0,
-                betValue: bet.isBetPlaced ? bet.betValue : null, // Store betValue only if placed
-            }))
-            .filter((bet) => bet.betValue !== null); // Remove unplaced bets
+      const placedBets = bets
+        .map((bet, index) => ({
+          originalIndex: index + 1, // Store 1-based index
+          cashOutAmount: 0,
+          betValue: bet.isBetPlaced ? bet.betValue : null, // Store betValue only if placed
+        }))
+        .filter((bet) => bet.betValue !== null); // Remove unplaced bets
 
-        if (placedBets.length > 0) {
-            const betValues = placedBets.reduce<Record<string, number>>(
-                (acc, bet) => {
-                    acc[`betValue${bet.originalIndex}`] = bet.betValue ?? 0; // Maintain original index
-                    return acc;
-                },
-                {}
-            );
-
-
+      if (placedBets.length > 0) {
+        const betValues = placedBets.reduce<Record<string, number>>(
+          (acc, bet) => {
+            acc[`betValue${bet.originalIndex}`] = bet.betValue ?? 0; // Maintain original index
+            return acc;
+          },
+          {}
+        );
 
         //      // Calculate TotalBetValue only when there are 2 or more bets
-        //      const totalBetValue = placedBets.length > 1 
-        //      ? placedBets.reduce((sum, bet) => sum + (bet.betValue ?? 0), 0) 
+        //      const totalBetValue = placedBets.length > 1
+        //      ? placedBets.reduce((sum, bet) => sum + (bet.betValue ?? 0), 0)
         //      : undefined;
 
         //  const betData = {
@@ -517,35 +627,35 @@ const BetPlane: React.FC = () => {
         //      ...(totalBetValue !== undefined && { TotalBetValue: totalBetValue }) // Add only if 2+ bets
         //  };
 
+        // Calculate TotalBetValue (sum of all bet values)
+        const TotalBetValue = placedBets.reduce(
+          (sum, bet) => sum + (bet.betValue ?? 0),
+          0
+        );
 
+        const betData = {
+          roundId,
+          userName: userName,
+          ...betValues,
+          TotalBetValue, // Add total bet value
+        };
 
-            // Calculate TotalBetValue (sum of all bet values)
-            const TotalBetValue = placedBets.reduce((sum, bet) => sum + (bet.betValue ?? 0), 0);
+        console.log("Bet Data:", JSON.stringify(betData));
 
-            const betData = {
-                roundId,
-                userName: userName,
-                ...betValues,
-                TotalBetValue, // Add total bet value
-            };
+        // Send data to backend
+        fetch("http://localhost:8000/api/bets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(betData),
+        })
+          .then((res) => res.json())
+          .then((data) => console.log("API Response:", data))
+          .catch((err) => console.error("API Error:", err));
 
-            console.log("Bet Data:", JSON.stringify(betData));
-
-            // Send data to backend
-            fetch("http://localhost:8000/api/bets", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(betData),
-            })
-            .then((res) => res.json())
-            .then((data) => console.log("API Response:", data))
-            .catch((err) => console.error("API Error:", err));
-
-            setCashoutsState(placedBets.map(() => ({ cashOutAmount: 0 }))); // Update state
-        }
+        setCashoutsState(placedBets.map(() => ({ cashOutAmount: 0 }))); // Update state
+      }
     }
-}, [status]);
-
+  }, [status]);
 
   //  Update cashouts dynamically during gameplay
   useEffect(() => {
@@ -584,26 +694,26 @@ const BetPlane: React.FC = () => {
   useEffect(() => {
     if (isPlaneOff) {
       const validBets = bets.filter((bet) => bet.isBetPlaced); // Get only placed bets
-  
+
       if (validBets.length === 0) return; // No bets placed, no JSON should log
-  
+
       validBets.forEach((bet, index) => {
         if (!bet.hasCashedOut) {
           // Only log for non-cashed-out bets
           const betIndex = bets.indexOf(bet) + 1; // Get actual bet position
           const betKey = `betValue${betIndex}`; // Ensure correct bet key
           const cashoutKey = `cashOutAmount${betIndex}`; // Dynamic cashout key
-  
+
           const cashoutData = {
             roundId,
             userName: userName,
             [betKey]: bet.betValue, // Include correct betValue key
             [cashoutKey]: 0, // Correct key mapping
           };
-  
+
           console.log(JSON.stringify(cashoutData));
-  
-          // 🔴 Send API request to /api/cashout
+
+          // Send API request to /api/cashout
           fetch("http://localhost:8000/api/cashout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -614,14 +724,14 @@ const BetPlane: React.FC = () => {
             .catch((err) => console.error("API Error:", err));
         }
       });
-  
+
       // Reset cashouts state
       setCashoutsState((prevCashouts) =>
         prevCashouts.map((cashout, index) => ({
           cashOutAmount: bets[index]?.hasCashedOut ? cashout.cashOutAmount : 0,
         }))
       );
-  
+
       // Reset bets when the plane is off
       setBets((prev) =>
         prev.map((bet) => ({
@@ -632,12 +742,11 @@ const BetPlane: React.FC = () => {
           hasCashedOut: false, // Reset hasCashedOut
         }))
       );
-  
+
       // Clear localStorage
       localStorage.removeItem("bets");
     }
   }, [isPlaneOff]);
-  
 
   useEffect(() => {
     if (!roundStart) {

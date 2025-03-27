@@ -39,6 +39,7 @@ const ActiveTabIndicator = styled.div<{ position: number }>`
 `;
 
 const ContentContainer = styled.div`
+width:94%;
   margin-top: 20px;
   padding: 10px;
   margin:10px;
