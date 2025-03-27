@@ -24,14 +24,53 @@ router.post("/", (req, res) => {
         existingBets.push(betData);
 
         // Write updated data back to file
-        fs.writeFile(filePath, JSON.stringify(existingBets, null, 2), (writeErr) => {
+        fs.writeFile(filePath, JSON.stringify(existingBets, null, 2), "utf8", (writeErr) => {
             if (writeErr) {
                 console.error("Error writing file:", writeErr);
                 return res.status(500).json({ message: "Failed to save bet data" });
             }
-            res.json({ message: "Bet data saved successfully", data: betData });
+
+            console.log("Bet data saved successfully:", betData);
+
+            // Latest data is read AFTER writing completes**
+            setTimeout(() => {
+                calculateTotalBetAmount(betData.roundId)
+                    .then((totalBetAmount) => {
+                        console.log("Total Bet Amount after saving:", totalBetAmount);
+                        res.json({ message: "Bet data saved successfully", data: betData, totalBetAmount });
+                    })
+                    .catch((error) => {
+                        console.error("Error calculating total bet amount:", error);
+                        res.status(500).json({ message: "Error calculating total bet amount" });
+                    });
+            }, 100); // **Give a small delay to ensure file update** (100 users)
         });
     });
 });
 
-module.exports = router;
+// Function to calculate total bet amount
+const calculateTotalBetAmount = async (xid) => {
+    let totalBetAmount = 0;
+
+    if (fs.existsSync(filePath)) {
+        try {
+            const fileContent = await fs.promises.readFile(filePath, "utf8");
+            if (fileContent) {
+                const betsData = JSON.parse(fileContent);
+                console.log(" Latest betsData:", betsData);
+
+                // Filter bets with the same roundId
+                const filteredBets = betsData.filter(bet => Number(bet.roundId) === Number(xid));
+
+                // Sum up TotalBetValue
+                totalBetAmount = filteredBets.reduce((sum, bet) => sum + bet.TotalBetValue, 0);
+            }
+        } catch (error) {
+            console.error("Error reading or parsing bets data:", error);
+        }
+    }
+
+    return totalBetAmount;
+};
+module.exports = { router, calculateTotalBetAmount };
+

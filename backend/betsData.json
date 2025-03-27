@@ -1,243 +1,103 @@
 [
   {
-    "roundId": 1742833993363,
-    "UserName": "test123",
-    "betValue2": 10
-  },
-  {
-    "roundId": 1742834035557,
-    "UserName": "test123",
-    "betValue1": 10,
-    "betValue2": 10
-  },
-  {
-    "roundId": 1742836193583,
-    "UserName": "test123",
-    "betValue1": 10
-  },
-  {
-    "roundId": 1742899041709,
-    "userName": "test123",
-    "betValue1": 10,
-    "betValue2": 10,
-    "TotalBetValue": 20
-  },
-  {
-    "roundId": 1742899076484,
-    "userName": "test123",
-    "betValue1": 10,
-    "betValue2": 100,
-    "TotalBetValue": 110
-  },
-  {
-    "roundId": 1742899091255,
-    "userName": "test123",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742899343992,
-    "userName": "test123",
-    "betValue1": 10,
-    "betValue2": 10,
-    "TotalBetValue": 20
-  },
-  {
-    "roundId": 1742899381121,
-    "userName": "test123",
-    "betValue1": 15
-  },
-  {
-    "roundId": 1742899424844,
-    "userName": "test123",
-    "betValue1": 20,
-    "betValue2": 10,
-    "TotalBetValue": 30
-  },
-  {
-    "roundId": 1742900186721,
-    "userName": "test123",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742900227497,
-    "userName": "test123",
-    "betValue1": 14,
-    "TotalBetValue": 14
-  },
-  {
-    "roundId": 1742900245157,
-    "userName": "test123",
-    "betValue1": 14,
-    "betValue2": 10,
-    "TotalBetValue": 24
-  },
-  {
-    "roundId": 1742900481088,
-    "userName": "test123",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742905478765,
-    "userName": "test123",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742905501097,
-    "userName": "test123",
-    "betValue1": 10,
-    "betValue2": 10,
-    "TotalBetValue": 20
-  },
-  {
-    "roundId": 1742905572990,
-    "userName": "test123",
-    "betValue1": 12,
-    "betValue2": 15,
-    "TotalBetValue": 27
-  },
-  {
-    "roundId": 1742905599199,
-    "userName": "test123",
-    "betValue2": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742905824486,
-    "userName": "test123",
-    "betValue1": 12,
-    "betValue2": 15,
-    "TotalBetValue": 27
-  },
-  {
-    "roundId": 1742905958326,
-    "userName": "test123",
-    "betValue2": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742905980661,
-    "userName": "test123",
-    "betValue1": 100,
-    "TotalBetValue": 100
-  },
-  {
-    "roundId": 1742905996442,
-    "userName": "test123",
-    "betValue1": 100,
-    "betValue2": 10,
-    "TotalBetValue": 110
-  },
-  {
-    "roundId": 1742906544658,
-    "userName": "test123",
-    "betValue1": 10,
-    "betValue2": 10,
-    "TotalBetValue": 20
-  },
-  {
-    "roundId": 1742906581949,
-    "userName": "test123",
-    "betValue1": 12,
-    "TotalBetValue": 12
-  },
-  {
-    "roundId": 1742906606200,
-    "userName": "test123",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1742955405968,
+    "roundId": 1743095110225,
     "userName": "test456",
     "betValue1": 10,
     "betValue2": 10,
     "TotalBetValue": 20
   },
   {
-    "roundId": 1743054096594,
+    "roundId": 1743095168175,
     "userName": "test456",
     "betValue1": 10,
     "betValue2": 100,
     "TotalBetValue": 110
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743100172081,
     "userName": "test456",
     "betValue1": 10,
     "TotalBetValue": 10
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743100191536,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 10,
+    "TotalBetValue": 20
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743101488248,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 10,
+    "TotalBetValue": 20
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743101504221,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 10,
+    "TotalBetValue": 20
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743101518258,
+    "userName": "test456",
+    "betValue1": 100,
+    "betValue2": 10,
+    "TotalBetValue": 110
+  },
+  {
+    "roundId": 1743101541812,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 10,
+    "TotalBetValue": 20
   },
   {
-    "roundId": 1743055355603,
+    "roundId": 1743102412831,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 100,
+    "TotalBetValue": 110
   },
   {
-    "roundId": 1743055381186,
+    "roundId": 1743102431382,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 100,
+    "TotalBetValue": 110
   },
   {
-    "roundId": 1743055402715,
+    "roundId": 1743102445248,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 100,
+    "TotalBetValue": 110
   },
   {
-    "roundId": 1743055420090,
+    "roundId": 1743102461411,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 100,
+    "TotalBetValue": 110
   },
   {
-    "roundId": 1743055420090,
-    "userName": "Guest",
-    "betValue1": 10,
-    "TotalBetValue": 10
-  },
-  {
-    "roundId": 1743055443053,
+    "roundId": 1743102475339,
     "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 10,
+    "TotalBetValue": 20
   },
   {
-    "roundId": 1743055443053,
-    "userName": "Guest",
+    "roundId": 1743102489223,
+    "userName": "test456",
     "betValue1": 10,
-    "TotalBetValue": 10
+    "betValue2": 100,
+    "TotalBetValue": 110
   },
   {
-    "roundId": 1743072280936,
+    "roundId": 1743102510066,
     "userName": "test456",
     "betValue1": 10,
     "TotalBetValue": 10
