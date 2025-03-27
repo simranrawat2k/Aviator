@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const http = require("http");
 const { Server } = require("ws");
+const path = require("path");
+const fs = require("fs");
 
 const app = express();
 app.use(cors());
@@ -20,6 +22,34 @@ let gameState = {
     multiplier: 1.0,
     roundStart: true,
     isPlaneOff: false,
+};
+
+const roundPointsFile = path.join(__dirname, "roundPoints.json");
+
+// Function to save round points to JSON file
+const saveRoundPoints = (roundId, multiplier) => {
+    let roundData = [];
+
+    // Read existing data if file exists
+    if (fs.existsSync(roundPointsFile)) {
+        const fileContent = fs.readFileSync(roundPointsFile, "utf8");
+        if (fileContent) {
+            roundData = JSON.parse(fileContent);
+        }
+    }
+
+    // Append new round data
+    roundData.push({ roundId, multiplier });
+
+    // Keep only the last 30 records
+    if (roundData.length > 30) {
+        roundData = roundData.slice(-30);
+    }
+
+    // Write updated data back to file
+    fs.writeFileSync(roundPointsFile, JSON.stringify(roundData, null, 2), "utf8");
+
+    console.log("Saved round points:", { roundId, multiplier });
 };
 
 // Function to start a new round
@@ -51,7 +81,11 @@ const startRound = () => {
                     clearInterval(incrementInterval);
                     gameState.status = 4; // Plane crashes
                     gameState.isPlaneOff = true;
-                    broadcastGameState();
+
+                     // Save final multiplier when the round ends
+                    saveRoundPoints(gameState.roundId, gameState.multiplier);
+
+                    broadcastGameState();               
 
                     setTimeout(startRound, 5000); // Restart round after 5s
                 } else {
@@ -96,6 +130,16 @@ startRound();
 app.get("/", (req, res) => {
     res.send("Server is running!");
 });
+
+//API to get points history
+app.get("/api/round-history", (req, res) => {
+    if (fs.existsSync(roundPointsFile)) {
+        const fileContent = fs.readFileSync(roundPointsFile, "utf8");
+        return res.json(JSON.parse(fileContent));
+    }
+    res.json([]); // Return an empty array if no data exists
+});
+
 
 app.use("/api/bets", betRoutes);
 app.use("/api/cashout", cashoutRoutes);

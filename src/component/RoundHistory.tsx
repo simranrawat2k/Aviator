@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HistoryIcon from "@mui/icons-material/History";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
@@ -88,45 +88,45 @@ const MultiplierItem = styled.span<{ value: number }>`
   border-radius: 30px;
 `;
 
+interface Round {
+  roundId: number;
+  multiplier: number;
+}
+
 const RoundHistory: React.FC = () => {
   const [showAll, setShowAll] = useState(false);
+  const [rounds, setRounds] = useState<Round[]>([]);
 
   function handleShow() {
     setShowAll((prev) => !prev);
   }
 
-  const multipliers: string[] = [
-    "1.00",
-    "2.34",
-    "3.45",
-    "4.56",
-    "5.67",
-    "11.23",
-    "1.00",
-    "0.89",
-    "1.00",
-    "2.34",
-    "3.45",
-    "4.56",
-    "5.67",
-    "11.23",
-    "1.00",
-    "0.89",
-    "1.00",
-    "2.34",
-    "3.45",
-    "4.56",
-    "5.67",
-    "11.23",
-    "1.00",
-    "0.89",
-    "1.00",
-    "2.34",
-    "3.45",
-    "4.56",
-    "5.67",
-    "11.23",
-  ];
+  useEffect(() => {
+    // Fetch initial data
+    fetch("http://localhost:8000/api/round-history")
+        .then((res) => res.json())
+        .then((data: Round[]) => setRounds(data))
+        .catch((err) => console.error("Error fetching round history:", err));
+
+    // WebSocket Connection
+    const socket = new WebSocket("ws://localhost:8000");
+
+    socket.onmessage = (event) => {
+        const gameState = JSON.parse(event.data);
+        if (gameState.status === 4) { // Round ended
+            setRounds((prevRounds) => {
+                const updatedRounds = [
+                    { roundId: gameState.roundId, multiplier: gameState.multiplier },
+                    ...prevRounds
+                ];
+                return updatedRounds.slice(0, 30); // Keep only last 5 rounds
+            });
+        }
+    };
+
+    return () => socket.close(); // Cleanup WebSocket on unmount
+}, []);
+
 
   return (
     <HistoryBox>
@@ -134,11 +134,11 @@ const RoundHistory: React.FC = () => {
         <AllHistory>
           <div>Round History</div>
           <AllItem>
-            {multipliers.map((multiplier, index) => {
-              const value = parseFloat(multiplier);
+            {rounds.map((y, index) => {
+              const value =y.multiplier;
               return (
                 <MultiplierItem key={index} value={value}>
-                  {multiplier}x
+                  {y.multiplier}x
                 </MultiplierItem>
               );
             })}
@@ -147,11 +147,11 @@ const RoundHistory: React.FC = () => {
       ) : (
         <RoundHistoryContainer>
           <MultiplierWrapper>
-            {multipliers.map((multiplier, index) => {
-              const value = parseFloat(multiplier);
+            {rounds.map((y, index) => {
+              const value = y.multiplier;
               return (
                 <MultiplierItem key={index} value={value}>
-                  {multiplier}x
+                  {y.multiplier}x
                 </MultiplierItem>
               );
             })}
