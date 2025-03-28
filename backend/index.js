@@ -111,8 +111,12 @@ const startRound = () => {
 
       // Wait for the total bet amount to be fetched
       try {
-        const totalBetAmount = await calculateTotalBetAmount(gameState.roundId);
-        console.log("Total Bet Amount:", totalBetAmount);
+        const { totalBetAmount, betCount } = await calculateTotalBetAmount(
+          gameState.roundId
+        );
+        console.log(
+          `Total Bet Amount before increment : ${totalBetAmount}, Number of Bets before increment: ${betCount}`
+        );
       } catch (error) {
         console.error("Error calculating total bet amount:", error);
       }
@@ -140,13 +144,22 @@ const startRound = () => {
               `Round ID: ${gameState.roundId}, Total Cash: ${totalCash}`
             );
 
-            const totalBetAmount = await calculateTotalBetAmount(
+            const { totalBetAmount, betCount } = await calculateTotalBetAmount(
               gameState.roundId
             );
             console.log(`Total Bet Amount: ${totalBetAmount}`);
+            console.log(`Bet Count: ${betCount}`);
+
+            // If only one bet is placed, set flyTime to ensure a max multiplier of 1.20
+            if (betCount === 1) {
+              flyTime = Math.random() * 2; // till 1.2
+              console.log(
+                `Only one bet placed. Adjusting fly time: ${flyTime}s`
+              );
+            }
 
             // Check if totalCash is 50% or more of totalBetAmount
-            if (totalCash >= totalBetAmount * 0.5) {
+            if (totalBetAmount > 0 && totalCash >= totalBetAmount * 0.5) {
               console.log(
                 "Cashout exceeded 50% of total bet. Plane is flying off!"
               );

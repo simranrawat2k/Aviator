@@ -1,122 +1,122 @@
 [
   {
-    "roundId": 1743102461411,
-    "multiplier": 1.08
+    "roundId": 1743152682607,
+    "multiplier": 1.02
   },
   {
-    "roundId": 1743102475339,
-    "multiplier": 1.07
-  },
-  {
-    "roundId": 1743102489223,
-    "multiplier": 1.71
-  },
-  {
-    "roundId": 1743102510066,
-    "multiplier": 1.08
-  },
-  {
-    "roundId": 1743102524072,
+    "roundId": 1743152682607,
     "multiplier": 1.01
   },
   {
-    "roundId": 1743102537345,
+    "roundId": 1743152682607,
     "multiplier": 1.01
   },
   {
-    "roundId": 1743102550589,
-    "multiplier": 1.01
+    "roundId": 1743152682607,
+    "multiplier": 1.04
   },
   {
-    "roundId": 1743102565049,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102578194,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102591330,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102604561,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102617818,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102630953,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102650579,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743102663848,
-    "multiplier": 1.63
-  },
-  {
-    "roundId": 1743102684015,
-    "multiplier": 1.22
-  },
-  {
-    "roundId": 1743102705729,
-    "multiplier": 1.85
-  },
-  {
-    "roundId": 1743102729849,
-    "multiplier": 1.27
-  },
-  {
-    "roundId": 1743102747374,
-    "multiplier": 1.8
-  },
-  {
-    "roundId": 1743102771771,
-    "multiplier": 1.67
-  },
-  {
-    "roundId": 1743102792050,
-    "multiplier": 1.93
-  },
-  {
-    "roundId": 1743102815180,
-    "multiplier": 1.55
-  },
-  {
-    "roundId": 1743102834203,
-    "multiplier": 1.64
-  },
-  {
-    "roundId": 1743102854204,
+    "roundId": 1743152682607,
     "multiplier": 1.05
   },
   {
-    "roundId": 1743102867960,
-    "multiplier": 1.86
+    "roundId": 1743152682607,
+    "multiplier": 1.05
   },
   {
-    "roundId": 1743102890458,
-    "multiplier": 1.8
+    "roundId": 1743152682607,
+    "multiplier": 1.05
   },
   {
-    "roundId": 1743102912204,
-    "multiplier": 2
+    "roundId": 1743152682607,
+    "multiplier": 1.05
   },
   {
-    "roundId": 1743102935985,
-    "multiplier": 1.92
+    "roundId": 1743152682607,
+    "multiplier": 1.05
   },
   {
-    "roundId": 1743102959056,
-    "multiplier": 1.97
+    "roundId": 1743152682607,
+    "multiplier": 1.05
   },
   {
-    "roundId": 1743102982604,
-    "multiplier": 1.13
+    "roundId": 1743152682607,
+    "multiplier": 1.05
+  },
+  {
+    "roundId": 1743152682607,
+    "multiplier": 1.05
+  },
+  {
+    "roundId": 1743152682607,
+    "multiplier": 1.05
+  },
+  {
+    "roundId": 1743153248170,
+    "multiplier": 1.65
+  },
+  {
+    "roundId": 1743153269692,
+    "multiplier": 1.21
+  },
+  {
+    "roundId": 1743154809420,
+    "multiplier": 1.47
+  },
+  {
+    "roundId": 1743154878110,
+    "multiplier": 1.84
+  },
+  {
+    "roundId": 1743154900689,
+    "multiplier": 1.96
+  },
+  {
+    "roundId": 1743154924220,
+    "multiplier": 1.59
+  },
+  {
+    "roundId": 1743155075539,
+    "multiplier": 1.14
+  },
+  {
+    "roundId": 1743155211217,
+    "multiplier": 1.29
+  },
+  {
+    "roundId": 1743155264790,
+    "multiplier": 1.1
+  },
+  {
+    "roundId": 1743155298510,
+    "multiplier": 1.49
+  },
+  {
+    "roundId": 1743155316970,
+    "multiplier": 1.59
+  },
+  {
+    "roundId": 1743156232185,
+    "multiplier": 1.24
+  },
+  {
+    "roundId": 1743156476626,
+    "multiplier": 1.15
+  },
+  {
+    "roundId": 1743157452657,
+    "multiplier": 1.07
+  },
+  {
+    "roundId": 1743157678326,
+    "multiplier": 1.06
+  },
+  {
+    "roundId": 1743158124141,
+    "multiplier": 1.35
+  },
+  {
+    "roundId": 1743158143828,
+    "multiplier": 1.05
   }
 ]

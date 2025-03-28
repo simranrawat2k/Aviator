@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import aviatorLogo from "../assets/aviator-logo.cafbd29233306bf7.svg";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Switch } from "@mui/material";
+import HowToPlay from "./HowToPlay";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -163,6 +164,13 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
   const { amount } = useBalance();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState<boolean>(false);
+
+  const handleModalOpen = () => setIsHowToPlayOpen(true);
+  const handleModalClose = () => setIsHowToPlayOpen(false);
+
+
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -177,10 +185,11 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
     <HeaderContainer>
       <LeftSection>
         <Logo src={aviatorLogo} alt="Aviator Logo" />
-        <HowToPlayButton>
+        <HowToPlayButton onClick={handleModalOpen}>
           <HelpOutlineOutlinedIcon style={{ fontSize: "18px" }} />
           {!isMobile && "How to Play?"}
         </HowToPlayButton>
+        <HowToPlay isOpen={isHowToPlayOpen} handleModalClose={handleModalClose} />
       </LeftSection>
       <RightSection>
         <BalanceContainer>

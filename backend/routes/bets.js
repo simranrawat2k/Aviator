@@ -51,16 +51,21 @@ router.post("/", (req, res) => {
 // Function to calculate total bet amount
 const calculateTotalBetAmount = async (xid) => {
     let totalBetAmount = 0;
+    let betCount = 0;
 
     if (fs.existsSync(filePath)) {
         try {
             const fileContent = await fs.promises.readFile(filePath, "utf8");
             if (fileContent) {
                 const betsData = JSON.parse(fileContent);
-                console.log(" Latest betsData:", betsData);
+
 
                 // Filter bets with the same roundId
                 const filteredBets = betsData.filter(bet => Number(bet.roundId) === Number(xid));
+                
+                // Count the number of bets
+                betCount = filteredBets.length;
+
 
                 // Sum up TotalBetValue
                 totalBetAmount = filteredBets.reduce((sum, bet) => sum + bet.TotalBetValue, 0);
@@ -70,7 +75,7 @@ const calculateTotalBetAmount = async (xid) => {
         }
     }
 
-    return totalBetAmount;
+    return { totalBetAmount, betCount };
 };
 module.exports = { router, calculateTotalBetAmount };
 
