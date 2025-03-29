@@ -84,7 +84,7 @@ const calculateTotalCashAmount = (roundId) => {
         return sum + (entry.cashOutAmount1 || 0) + (entry.cashOutAmount2 || 0);
       }, 0);
 
-      console.log(`Total Cash Amount for roundId ${roundId}:`, totalCashAmount); 
+      console.log(`Total Cash Amount for roundId ${roundId}:`, totalCashAmount);
       resolve(totalCashAmount);
     });
   });
@@ -108,22 +108,28 @@ const startRound = () => {
     setTimeout(async () => {
       gameState.status = 3; // Animation starts
       gameState.multiplier = 1.0;
+
+      try {
+        // calculating total bets at status 3 (instead of status 2) due to delay in data coming from frontend 
+        const { totalBetAmount, betCount } = await calculateTotalBetAmount(
+          gameState.roundId
+        );
+        gameState.totalBetAmount = totalBetAmount;
+        gameState.betCount = betCount;
+
+        console.log(
+          `Updated Total Bet Amount before Status 3: ${totalBetAmount}`
+        );
+      } catch (error) {
+        console.error(
+          "Error recalculating total bet amount before status 3:",
+          error
+        );
+      }
       broadcastGameState();
 
       let flyTime = Math.random() * 10; // Random flight duration (0-10s)
       let elapsedTime = 0;
-
-      // Wait for the total bet amount to be fetched
-      try {
-        const { totalBetAmount, betCount } = await calculateTotalBetAmount(
-          gameState.roundId
-        );
-        console.log(
-          `Total Bet Amount before increment : ${totalBetAmount}, Number of Bets before increment: ${betCount}`
-        );
-      } catch (error) {
-        console.error("Error calculating total bet amount:", error);
-      }
 
       // Start incrementing multiplier on the backend
       const incrementInterval = setInterval(async () => {
@@ -150,14 +156,8 @@ const startRound = () => {
               `Round ID: ${gameState.roundId}, Total Cash: ${totalCash}`
             );
 
-            const { totalBetAmount, betCount } = await calculateTotalBetAmount(
-              gameState.roundId
-            );
-            console.log(`Total Bet Amount: ${totalBetAmount}`);
-            console.log(`Bet Count: ${betCount}`);
-
             // If only one bet is placed, set flyTime to ensure a max multiplier of 1.20
-            if (betCount === 1) {
+            if (gameState.betCount === 1) {
               flyTime = Math.random() * 2; // till 1.2
               console.log(
                 `Only one bet placed. Adjusting fly time: ${flyTime}s`
@@ -165,7 +165,10 @@ const startRound = () => {
             }
 
             // Check if totalCash is 50% or more of totalBetAmount
-            if (totalBetAmount > 0 && totalCash >= totalBetAmount * 0.5) {
+            if (
+              gameState.totalBetAmount > 0 &&
+              totalCash >= gameState.totalBetAmount * 0.5
+            ) {
               console.log(
                 "Cashout exceeded 50% of total bet. Plane is flying off!"
               );

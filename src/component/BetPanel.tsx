@@ -605,9 +605,9 @@ const BetPlane: React.FC = () => {
       .catch((err) => console.error("API Error:", err));
   };
 
-  //  Capture bets at status 3 and initialize cashouts with 0
+  //  Capture bets at status 2 and initialize cashouts with 0
   useEffect(() => {
-    if (status === 3) {
+    if (status === 2) {
       const placedBets = bets
         .map((bet, index) => ({
           originalIndex: index + 1, // Store 1-based index

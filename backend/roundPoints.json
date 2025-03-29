@@ -1,53 +1,5 @@
 [
   {
-    "roundId": 1743246356822,
-    "multiplier": 1.07
-  },
-  {
-    "roundId": 1743247192881,
-    "multiplier": 1.71
-  },
-  {
-    "roundId": 1743247214384,
-    "multiplier": 1.08
-  },
-  {
-    "roundId": 1743247229315,
-    "multiplier": 1.01
-  },
-  {
-    "roundId": 1743247242578,
-    "multiplier": 1.19
-  },
-  {
-    "roundId": 1743247363310,
-    "multiplier": 1.16
-  },
-  {
-    "roundId": 1743247495803,
-    "multiplier": 1.04
-  },
-  {
-    "roundId": 1743247551055,
-    "multiplier": 1.03
-  },
-  {
-    "roundId": 1743247564660,
-    "multiplier": 1.04
-  },
-  {
-    "roundId": 1743247647525,
-    "multiplier": 1.03
-  },
-  {
-    "roundId": 1743247661054,
-    "multiplier": 1.04
-  },
-  {
-    "roundId": 1743247674614,
-    "multiplier": 1.04
-  },
-  {
     "roundId": 1743247688182,
     "multiplier": 1.14
   },
@@ -118,5 +70,53 @@
   {
     "roundId": 1743249646424,
     "multiplier": 1.92
+  },
+  {
+    "roundId": 1743250608508,
+    "multiplier": 1.55
+  },
+  {
+    "roundId": 1743250627568,
+    "multiplier": 1.86
+  },
+  {
+    "roundId": 1743251869518,
+    "multiplier": 1.01
+  },
+  {
+    "roundId": 1743251882691,
+    "multiplier": 1.02
+  },
+  {
+    "roundId": 1743255457781,
+    "multiplier": 1.01
+  },
+  {
+    "roundId": 1743255633093,
+    "multiplier": 1.11
+  },
+  {
+    "roundId": 1743255647417,
+    "multiplier": 1.57
+  },
+  {
+    "roundId": 1743255666736,
+    "multiplier": 1.07
+  },
+  {
+    "roundId": 1743255761915,
+    "multiplier": 1.05
+  },
+  {
+    "roundId": 1743255801589,
+    "multiplier": 1.31
+  },
+  {
+    "roundId": 1743255818095,
+    "multiplier": 1.36
+  },
+  {
+    "roundId": 1743255835039,
+    "multiplier": 1.05
   }
 ]
