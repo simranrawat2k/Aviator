@@ -584,6 +584,16 @@ const BetPlane: React.FC = () => {
 
     console.log("Cashout JSON:", JSON.stringify(cashoutData));
 
+    //Send currentCashout data to backend
+    fetch("http://localhost:8000/api/currentCashout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(cashoutData),
+    })
+      .then((res) => res.json())
+      .then((data) => console.log("API Response:", data))
+      .catch((err) => console.error("API Error:", err));
+
     // Send the cashout data to the backend
     fetch("http://localhost:8000/api/cashout", {
       method: "POST",

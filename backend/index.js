@@ -4,8 +4,16 @@ const http = require("http");
 const { Server } = require("ws");
 const path = require("path");
 const fs = require("fs");
-const { router: betRoutes, calculateTotalBetAmount } = require("./routes/bets");
-const filePath = path.join(__dirname, "cashout.json");
+const {
+  router: betRoutes,
+  calculateTotalBetAmount,
+  clearBets,
+} = require("./routes/bets");
+const {
+  router: currentCashout,
+  clearCashout,
+} = require("./routes/currentCashout");
+const filePath = path.join(__dirname, "currentCashout.json");
 const socketIo = require("socket.io");
 
 const app = express();
@@ -71,16 +79,12 @@ const calculateTotalCashAmount = (roundId) => {
         console.error("Error parsing cashout.json:", parseErr);
       }
 
-      // Filter and calculate total cash amount
-      const totalCashAmount = existingCashouts
-        .filter((entry) => entry.roundId === roundId)
-        .reduce((sum, entry) => {
-          return (
-            sum + (entry.cashOutAmount1 || 0) + (entry.cashOutAmount2 || 0)
-          );
-        }, 0);
+      // Calculate total cash amount
+      const totalCashAmount = existingCashouts.reduce((sum, entry) => {
+        return sum + (entry.cashOutAmount1 || 0) + (entry.cashOutAmount2 || 0);
+      }, 0);
 
-      console.log(`Total Cash Amount for roundId ${roundId}:`, totalCashAmount); // ✅ Log result
+      console.log(`Total Cash Amount for roundId ${roundId}:`, totalCashAmount); 
       resolve(totalCashAmount);
     });
   });
@@ -127,6 +131,8 @@ const startRound = () => {
           clearInterval(incrementInterval);
           gameState.status = 4; // Plane crashes
           gameState.isPlaneOff = true;
+          clearBets(); // Call the function to clear bets.json
+          clearCashout();
 
           // Save final multiplier when the round ends
           saveRoundPoints(gameState.roundId, gameState.multiplier);
@@ -166,6 +172,8 @@ const startRound = () => {
               clearInterval(incrementInterval);
               gameState.status = 4; // Plane flies off
               gameState.isPlaneOff = true;
+              clearBets(); // Call the function to clear bets.json
+              clearCashout();
 
               saveRoundPoints(gameState.roundId, gameState.multiplier);
               broadcastGameState();
@@ -225,6 +233,7 @@ app.get("/api/round-history", (req, res) => {
 
 app.use("/api/bets", betRoutes);
 app.use("/api/cashout", cashoutRoutes);
+app.use("/api/currentCashout", currentCashout);
 
 // Start the backend server
 const PORT = process.env.PORT || 8000;

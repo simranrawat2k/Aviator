@@ -48,6 +48,17 @@ router.post("/", (req, res) => {
     });
 });
 
+// Function to clear the JSON file
+const clearBets = () => {
+    fs.writeFile(filePath, JSON.stringify([]), (err) => {
+        if (err) {
+            console.error('Error clearing bets.json:', err);
+        } else {
+            console.log('bets.json has been cleared.');
+        }
+    });
+};
+
 // Function to calculate total bet amount
 const calculateTotalBetAmount = async (xid) => {
     let totalBetAmount = 0;
@@ -60,15 +71,15 @@ const calculateTotalBetAmount = async (xid) => {
                 const betsData = JSON.parse(fileContent);
 
 
-                // Filter bets with the same roundId
-                const filteredBets = betsData.filter(bet => Number(bet.roundId) === Number(xid));
+                // // Filter bets with the same roundId
+                // const filteredBets = betsData.filter(bet => Number(bet.roundId) === Number(xid));
                 
                 // Count the number of bets
-                betCount = filteredBets.length;
+                betCount = betsData.length;
 
 
                 // Sum up TotalBetValue
-                totalBetAmount = filteredBets.reduce((sum, bet) => sum + bet.TotalBetValue, 0);
+                totalBetAmount = betsData.reduce((sum, bet) => sum + bet.TotalBetValue, 0);
             }
         } catch (error) {
             console.error("Error reading or parsing bets data:", error);
@@ -77,5 +88,5 @@ const calculateTotalBetAmount = async (xid) => {
 
     return { totalBetAmount, betCount };
 };
-module.exports = { router, calculateTotalBetAmount };
+module.exports = { router, calculateTotalBetAmount,  clearBets };
 
