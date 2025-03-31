@@ -8,25 +8,43 @@ import AudioPlayer from "./component/AudioPlayer";
 import { BalanceProvider } from "./context/BalanceContext";
 import { GameProvider } from "./context/GameContext"; 
 import { UIProvider } from "./context/uiContext";
+import AuthPage from "./component/AuthPage";
+import FullLoader from "./component/FullLoader";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const toggleAudio = () => {
     setIsPlaying((prev) => !prev);
   };
 
   return (
-    <UIProvider> 
-      <GameProvider> 
+    <UserProvider>
+      <GameProvider>
         <BalanceProvider>
-          <AudioPlayer isPlaying={isPlaying} />
-          <Header toggleAudio={toggleAudio} isPlaying={isPlaying}/>
-          <Main />
+          {loading ? (
+            <FullLoader />
+          ) : isAuthenticated ? (
+            <>
+              <AudioPlayer isPlaying={isPlaying} />
+              <Header toggleAudio={toggleAudio} isPlaying={isPlaying} />
+              <Main />
+            </>
+          ) : (
+            <AuthPage setIsAuthenticated={setIsAuthenticated} setLoading={setLoading} />
+          )}
+            <ToastContainer position="top-right" autoClose={3000} />
+            
         </BalanceProvider>
       </GameProvider>
-    </UIProvider>
+      </UserProvider>
   );
 }
+
 
 export default App;

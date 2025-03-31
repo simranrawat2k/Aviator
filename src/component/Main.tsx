@@ -4,6 +4,7 @@ import Graph from "./Graph";
 import BetPlane from "./BetPanel";
 import { Box } from "@mui/material";
 import styled from "styled-components";
+import AuthPage from "./AuthPage";
 
 const HEADER_HEIGHT = 50;
 
@@ -139,6 +140,7 @@ const Main: React.FC = () => {
         </BetPanel>
       </RightSection>
     </Container>
+   
   );
 };
 

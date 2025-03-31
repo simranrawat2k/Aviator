@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import aviatorLogo from "../assets/aviator-logo.cafbd29233306bf7.svg";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -11,6 +11,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { Switch } from "@mui/material";
 import HowToPlay from "./HowToPlay";
+import { useUser } from "../context/UserContext";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -159,11 +160,13 @@ const CustomSwitch = styled(Switch)({
 });
 
 const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ toggleAudio, isPlaying }) => {
-  const { userData } = useUI();
+  const { user } = useUser();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { amount } = useBalance();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+ 
 
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState<boolean>(false);
 
@@ -179,7 +182,7 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
     setAnchorEl(null);
   };
 
-  console.log("Fetched user data:", userData);
+  console.log("Fetched user data:", user);
 
   return (
     <HeaderContainer>
@@ -193,7 +196,7 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
       </LeftSection>
       <RightSection>
         <BalanceContainer>
-          <span>{userData?.UserName || "Guest"}</span>
+          <span>{user?.UserName || "Guest"}</span>
           <BalanceBox>{amount.toFixed(2)}</BalanceBox>
           <span>INR</span>
         </BalanceContainer>

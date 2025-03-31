@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
 import { useUI } from "./uiContext";
+import { useUser } from "./UserContext";
 
 // Define context type
 interface BalanceContextType {
@@ -12,19 +13,19 @@ const BalanceContext = createContext<BalanceContextType | undefined>(undefined);
 
 // Provider Component
 export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { userData } = useUI(); // Get user data from UIContext
+  const { user } = useUser();  // Get user data from userContext
   const [amount, setAmount] = useState<number>(0);
 
   // Calculate initial amount when userData is available
   useEffect(() => {
-    if (userData) {
+    if (user) {
       const initialAmount =
-        userData.Exposure < 0
-          ? (userData.Balance || 0) - Math.abs(userData.Exposure || 0)
-          : userData.Balance || 0;
+        user.Exposure < 0
+          ? (user.Balance || 0) - Math.abs(user.Exposure || 0)
+          : user.Balance || 0;
       setAmount(initialAmount);
     }
-  }, [userData]);
+  }, [user]);
 
   // Function to update amount
   const updateAmount = (value: number) => {

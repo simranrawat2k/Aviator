@@ -7,6 +7,7 @@ import { useBalance } from "../context/BalanceContext";
 import { useGameContext } from "../context/GameContext";
 import UserData from "../Json/UserData.json";
 import { useUI } from "../context/uiContext";
+import { useUser } from "../context/UserContext";
 
 const BetPanelContainer = styled(Box)`
   display: flex;
@@ -424,8 +425,8 @@ type Cashout = {
 const BetPlane: React.FC = () => {
   const { gameState } = useGameContext();
   const { status, roundStart, isPlaneOff, multiplier, roundId } = gameState;
-  const { userData } = useUI(); // Get user data from UIContext
-  const userName = userData?.UserName || "Guest"; // Default to "Guest" if no username
+  const { user } = useUser(); // Get user data from UIContext
+  const userName = user?.UserName || "Guest"; // Default to "Guest" if no username
   const [activeTab, setActiveTab] = useState(0);
   const { amount, updateAmount } = useBalance();
 
