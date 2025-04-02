@@ -8,6 +8,7 @@ import { useGameContext } from "../context/GameContext";
 import UserData from "../Json/UserData.json";
 import { useUI } from "../context/uiContext";
 import { useUser } from "../context/UserContext";
+import { showToast } from "../utils/toast";
 
 const BetPanelContainer = styled(Box)`
   display: flex;
@@ -454,7 +455,7 @@ const BetPlane: React.FC = () => {
 
     // Check if the amount is enough
     if (amount <= 0 || amount < betAmount) {
-      toast.error("Not Enough Balance"); // Show toast message
+      showToast("Not Enough Balance", "error"); 
       return; // Stop execution
     }
 
@@ -529,10 +530,7 @@ const BetPlane: React.FC = () => {
     const savedBets = JSON.parse(localStorage.getItem("bets") || "[]");
 
     if (savedBets.length > 0) {
-      const placedBets = savedBets.filter((bet: any) => bet.isBetPlaced);
-
-      // If there are no placed bets, use the stored bets as they are
-      setBets(placedBets.length > 0 ? placedBets : savedBets);
+      setBets(savedBets);
     } else {
       setBets([
         {
@@ -559,7 +557,7 @@ const BetPlane: React.FC = () => {
     const betValue = bet.betValue; // Original bet amount
 
     // Show success toast
-    toast.success(`You won ${amountWon.toFixed(2)} INR 🎉`);
+    showToast(`You won ${amountWon.toFixed(2)} INR 🎉`, "success");
 
     // Add winnings to balance
     updateAmount(amountWon);
@@ -875,7 +873,6 @@ const BetPlane: React.FC = () => {
           </BetOneContainer>
         </BetSection>
       ))}
-      <ToastContainer position="top-right" autoClose={3000} />
     </BetPanelContainer>
   );
 };

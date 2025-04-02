@@ -530,7 +530,7 @@ const BetPlane: React.FC<GraphProps> = ({
           </BetOneContainer>
         </BetSection>
       ))}
-      <ToastContainer position="top-right" autoClose={3000} />
+      {/* <ToastContainer position="top-right" autoClose={3000} /> */}
     </BetPanelContainer>
   );
 };

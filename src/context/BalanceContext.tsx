@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { useUI } from "./uiContext";
 import { useUser } from "./UserContext";
 
 // Define context type
@@ -16,6 +15,14 @@ export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const { user } = useUser();  // Get user data from userContext
   const [amount, setAmount] = useState<number>(0);
 
+   // Load amount from localStorage on mount
+   useEffect(() => {
+    const savedAmount = localStorage.getItem("balanceAmount");
+    if (savedAmount) {
+      setAmount(parseFloat(savedAmount));
+    }
+  }, []);
+
   // Calculate initial amount when userData is available
   useEffect(() => {
     if (user) {
@@ -24,13 +31,23 @@ export const BalanceProvider: React.FC<{ children: React.ReactNode }> = ({ child
           ? (user.Balance || 0) - Math.abs(user.Exposure || 0)
           : user.Balance || 0;
       setAmount(initialAmount);
+      localStorage.setItem("balanceAmount", initialAmount.toString()); // Save to localStorage
     }
   }, [user]);
 
-  // Function to update amount
-  const updateAmount = (value: number) => {
-    setAmount((prevAmount) => prevAmount + value);
-  };
+  // // Function to update amount
+  // const updateAmount = (value: number) => {
+  //   setAmount((prevAmount) => prevAmount + value);
+  // };
+
+    // Function to update amount
+    const updateAmount = (value: number) => {
+      setAmount((prevAmount) => {
+        const newAmount = prevAmount + value;
+        localStorage.setItem("balanceAmount", newAmount.toString()); // Save updated amount
+        return newAmount;
+      });
+    };
 
   return (
     <BalanceContext.Provider value={{ amount, updateAmount }}>

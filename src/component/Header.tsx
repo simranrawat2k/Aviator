@@ -12,6 +12,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { Switch } from "@mui/material";
 import HowToPlay from "./HowToPlay";
 import { useUser } from "../context/UserContext";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -140,7 +141,6 @@ const StyledMenuIcon = styled(MenuIcon)`
 `;
 
 const CustomSwitch = styled(Switch)({
-  
   "& .MuiSwitch-switchBase.Mui-checked": {
     color: "white", // Moving dot color when ON
   },
@@ -156,23 +156,23 @@ const CustomSwitch = styled(Switch)({
   "& .MuiSwitch-thumb": {
     marginTop: 1, // Adjust to center it properly
   },
- 
 });
 
-const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ toggleAudio, isPlaying }) => {
+const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean; onLogout: () => void }> = ({
+  toggleAudio,
+  isPlaying,
+  onLogout,
+}) => {
   const { user } = useUser();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { amount } = useBalance();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
- 
-
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState<boolean>(false);
 
   const handleModalOpen = () => setIsHowToPlayOpen(true);
   const handleModalClose = () => setIsHowToPlayOpen(false);
-
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -182,7 +182,10 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
     setAnchorEl(null);
   };
 
-  console.log("Fetched user data:", user);
+  const handleLogout = () => {
+    // Call the onLogout prop to trigger the logout functionality
+    onLogout();
+  };
 
   return (
     <HeaderContainer>
@@ -192,7 +195,10 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
           <HelpOutlineOutlinedIcon style={{ fontSize: "18px" }} />
           {!isMobile && "How to Play?"}
         </HowToPlayButton>
-        <HowToPlay isOpen={isHowToPlayOpen} handleModalClose={handleModalClose} />
+        <HowToPlay
+          isOpen={isHowToPlayOpen}
+          handleModalClose={handleModalClose}
+        />
       </LeftSection>
       <RightSection>
         <BalanceContainer>
@@ -224,10 +230,10 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
             }}
             sx={{
               "& .MuiPaper-root": {
-                backgroundColor: "#2C2D30", 
+                backgroundColor: "#2C2D30", // Background color for the Menu
                 minWidth: "200px",
-                paddingTop:"0px",
-                paddingBottom:"0px"
+                paddingTop: "0px",
+                paddingBottom: "0px",
               },
             }}
           >
@@ -239,11 +245,32 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean }> = ({ tog
                 fontSize: "12px",
                 fontWeight: "bold",
                 color: "#AEAEAF",
-                // borderBottom: "1px solid rgb(83, 83, 83)",
+                backgroundColor: "#2C2D30", 
+                borderBottom: "1px solid rgb(83, 83, 83)",
               }}
             >
               SOUND
-              <CustomSwitch size="small" checked={isPlaying} onChange={toggleAudio} />
+              <CustomSwitch
+                size="small"
+                checked={isPlaying}
+                onChange={toggleAudio}
+              />
+            </MenuItem>
+
+            <MenuItem
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: "12px",
+                fontWeight: "bold",
+                color: "#AEAEAF",
+                backgroundColor: "#2C2D30", 
+              }}
+              onClick={handleLogout}
+            >
+              LOG OUT
+              <LogoutIcon sx={{ fontSize: "24px", paddingRight: "5px"}}/>
             </MenuItem>
           </Menu>
         </div>

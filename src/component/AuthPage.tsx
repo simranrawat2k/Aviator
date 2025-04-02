@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import {
   TextField,
@@ -12,9 +12,9 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import "react-toastify/dist/ReactToastify.css";
 import aviatorImg from "../assets/aviator-logo.cafbd29233306bf7.svg";
 import wheelImg from "../assets/bg-rotate-old-NCXaJEFI.svg";
-import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useUser } from "../context/UserContext";
+import { showToast } from "../utils/toast";
 
 const GlobalStyle = createGlobalStyle`
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -135,7 +135,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
 
   const handleSubmit = async () => {
     if (!username.trim() || !password.trim()) {
-      toast.error("Enter username or password");
+      showToast("Enter User name or password", "error");
       return;
     }
 
@@ -152,32 +152,58 @@ const AuthPage: React.FC<AuthPageProps> = ({
       console.log("Login API Response:", data);
 
       if (data.status === "success") {
-        toast.success("Logged in successfully!");
-
-        const userResponse = await fetch(
-          `https://silverexch24.com/users_api?UserName=${username}`
+        // Perform single user check
+        const checkResponse = await fetch(
+          `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${data.uniqid}`
         );
-        const userData = await userResponse.json();
-        console.log("User Data API Response:", userData);
+        const checkData = await checkResponse.json();
+        console.log("Single User Check API Response:", checkData);
 
-        if (userData.status === "success") {
-          toast.success("User data retrieved successfully!");
-          setUser(userData);
-          console.log("this is storing", userData);
-          setIsAuthenticated(true); // Show main app
+        if (checkData.flag === 0) {
+          showToast("Logged in successfully!", "success");
+
+          const userResponse = await fetch(
+            `https://silverexch24.com/users_api?UserName=${username}`
+          );
+          const userData = await userResponse.json();
+          console.log("User Data API Response:", userData);
+
+          if (userData.status === "success") {
+            setUser(userData);
+            setIsAuthenticated(true); // Show main app
+
+            // Save uniqueId and username in localStorage
+            localStorage.setItem(
+              "verifyUser",
+              JSON.stringify({ username, uniqueid: data.uniqid })
+            );
+
+            // Save data in session storage
+            const sessionData = {
+              user: userData,
+              expiry: Date.now() + 1 * 60 * 1000, // Set expiry for 1 minute
+            };
+            sessionStorage.setItem("userSession", JSON.stringify(sessionData));
+          } else {
+            showToast("Failed to fetch user data.", "error");
+          }
         } else {
-          toast.error("Failed to fetch user data.");
+          showToast("Can't login", "error");
         }
       } else {
-        toast.error(data.message || "Login failed!");
+        showToast(data.message || "Login failed!", "error");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Something went wrong. Please try again.");
+      showToast("Something went wrong. Please try again.", "error");
     } finally {
       setLoading(false); // Hide FullLoader
     }
   };
+
+  useEffect(() => {
+    localStorage.removeItem("verifyUser");
+  }, []);
 
   return (
     <>
@@ -213,6 +239,11 @@ const AuthPage: React.FC<AuthPageProps> = ({
               fullWidth
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSubmit();
+                }
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -230,6 +261,7 @@ const AuthPage: React.FC<AuthPageProps> = ({
                 ),
               }}
             />
+
             {/* Confirm Password (Only for SignUp) */}
             {isSignUp && (
               <StyledTextField
@@ -278,9 +310,15 @@ const AuthPage: React.FC<AuthPageProps> = ({
             {isSignUp
               ? "Already have an account? Login"
               : "Don't have an account? Sign Up"}
+
+            {/* {isSignUp ? (
+              "Already have an account? Login"
+            ) : (
+              <StyledButton variant="contained">Sign Up</StyledButton>
+            )} */}
           </ToggleText>
         </AuthBox>
-        <ToastContainer />
+        {/* <ToastContainer /> */}
       </AuthContainer>
     </>
   );

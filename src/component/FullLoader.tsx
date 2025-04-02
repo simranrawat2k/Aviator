@@ -78,6 +78,7 @@ const FullLoader: React.FC = () => {
           transition={{ duration: 3, ease: "linear", repeat: Infinity }}
         />
       </LoadingBarContainer>
+     
     </LoaderContainer>
   );
 };

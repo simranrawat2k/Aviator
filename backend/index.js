@@ -128,12 +128,12 @@ const startRound = () => {
       }
       broadcastGameState();
 
-      let flyTime = Math.random() * 10; // Random flight duration (0-10s)
+      let flyTime = Math.random() * 10; // Random flight duration (0-10s) 
       let elapsedTime = 0;
 
       // Start incrementing multiplier on the backend
       const incrementInterval = setInterval(async () => {
-        if (elapsedTime >= flyTime) {
+        if (elapsedTime >= flyTime) { 
           clearInterval(incrementInterval);
           gameState.status = 4; // Plane crashes
           gameState.isPlaneOff = true;
@@ -158,7 +158,8 @@ const startRound = () => {
 
             // If only one bet is placed, set flyTime to ensure a max multiplier of 1.20
             if (gameState.betCount === 1) {
-              flyTime = Math.random() * 2; // till 1.2
+              // flyTime = Math.random() * 2; // write 2 for 1.2 points  
+              flyTime = 0.5 + Math.random() * 1.5;   //between 1.05 to 1.2 
               console.log(
                 `Only one bet placed. Adjusting fly time: ${flyTime}s`
               );
