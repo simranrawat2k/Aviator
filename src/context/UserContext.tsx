@@ -81,34 +81,34 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
   }, []);
 
   //fetch user Data in every 10 seconds
-  // useEffect(() => {
-  //   const fetchUserData = async () => {
-  //     const storedUser = localStorage.getItem("verifyUser");
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const storedUser = localStorage.getItem("verifyUser");
   
-  //     if (!storedUser) return;
+      if (!storedUser) return;
   
-  //     const { username } = JSON.parse(storedUser);
+      const { username } = JSON.parse(storedUser);
   
-  //     try {
-  //       const response = await fetch(
-  //         `https://silverexch24.com/users_api?UserName=${username}`
-  //       );
-  //       const data = await response.json();
-  //       console.log("User Data API Response:", data);
+      try {
+        const response = await fetch(
+          `https://silverexch24.com/users_api?UserName=${username}`
+        );
+        const data = await response.json();
+        console.log("User Data API Response:", data);
   
-  //       if (data.status === "success") {
-  //         setUser(data); // Always update the user, even if unchanged
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching user data:", error);
-  //     }
-  //   };
+        if (data.status === "success") {
+          setUser(data); // Always update the user, even if unchanged
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
   
-  //   // Fetch user data every 10 seconds
-  //   const intervalId = setInterval(fetchUserData, 10000);
+    // Fetch user data every 10 seconds
+    const intervalId = setInterval(fetchUserData, 10000);
   
-  //   return () => clearInterval(intervalId); // Cleanup interval on unmount
-  // }, []);
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
   
   
 

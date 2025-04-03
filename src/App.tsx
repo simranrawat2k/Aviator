@@ -33,35 +33,35 @@ function App() {
   };
 
   //call verify API after 10 seconds
-  // useEffect(() => {
-  //   const checkUserStatus = async () => {
-  //     const storedUser = localStorage.getItem("verifyUser");
+  useEffect(() => {
+    const checkUserStatus = async () => {
+      const storedUser = localStorage.getItem("verifyUser");
 
-  //     if (!storedUser) return;
+      if (!storedUser) return;
 
-  //     const { username, uniqueid } = JSON.parse(storedUser);
+      const { username, uniqueid } = JSON.parse(storedUser);
 
-  //     try {
-  //       const response = await fetch(
-  //         `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
-  //       );
-  //       const data = await response.json();
-  //       console.log("User Status Check:", data);
+      try {
+        const response = await fetch(
+          `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
+        );
+        const data = await response.json();
+        console.log("User Status Check:", data);
 
-  //       if (data.flag !== 0) {
-  //         localStorage.removeItem("verifyUser");
-  //         handleLogout();
-  //       }
-  //     } catch (error) {
-  //       console.error("Error checking user status:", error);
-  //     }
-  //   };
+        if (data.flag !== 0) {
+          localStorage.removeItem("verifyUser");
+          handleLogout();
+        }
+      } catch (error) {
+        console.error("Error checking user status:", error);
+      }
+    };
 
-  //   // Run check every 10 seconds
-  //   const intervalId = setInterval(checkUserStatus, 10000);
+    // Run check every 10 seconds
+    const intervalId = setInterval(checkUserStatus, 10000);
 
-  //   return () => clearInterval(intervalId); // Cleanup interval on unmount
-  // }, []);
+    return () => clearInterval(intervalId); // Cleanup interval on unmount
+  }, []);
 
     // Function to get query parameters from URL
     const getQueryParams = (param: string): string | null => {
