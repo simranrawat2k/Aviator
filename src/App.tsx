@@ -16,7 +16,6 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
-  const [token, setToken] = useState<string | null>(null);
 
   const checkSession = () => {
     const sessionData = sessionStorage.getItem("userSession");
@@ -63,35 +62,29 @@ function App() {
   //   return () => clearInterval(intervalId); // Cleanup interval on unmount
   // }, []);
 
-  useEffect(() => {
-    const receiveAuthToken = (event: MessageEvent) => {
-      console.log("📩 Message received:", event);
-      console.log("🌍 Event Origin:", event.origin);
-
-      // 🔍 Ensure message is coming from First Website
-      if (event.origin !== "https://fun-exchange.vercel.app") {
-        console.warn("⚠ Unauthorized origin:", event.origin);
-        return;
-      }
-
-      const receivedToken = event.data.token;
-      if (receivedToken) {
-        console.log("🔑 Received token:", receivedToken);
-        setToken(receivedToken);
-
-        // Store token in LocalStorage or Cookies
-        localStorage.setItem("accessToken", receivedToken);
-      }
+    // Function to get query parameters from URL
+    const getQueryParams = (param: string): string | null => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(param);
     };
+  
+    useEffect(() => {
+      // Extract token from URL
+      const token = getQueryParams("token");
+      if (token) {
+        const [userName, userId] = token.split("@");
+  
+        // Check if both values exist
+        if (userName && userId) {
+          // setUser({ userName, userId }); // Save to UserContext
+          console.log("userName", userName, "id", userId)
+          setIsAuthenticated(true); // Mark as authenticated
+        }
+      }else{
+        setIsAuthenticated(false);
+      }
+    }, []);
 
-    // ✅ Add Event Listener for Receiving Messages
-    window.addEventListener("message", receiveAuthToken);
-
-    return () => {
-      // ❌ Cleanup Event Listener on Unmount
-      window.removeEventListener("message", receiveAuthToken);
-    };
-  }, []);
 
   useEffect(() => {
     // Check session when app loads
