@@ -10,6 +10,7 @@ import FullLoader from "./component/FullLoader";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { UserProvider, useUser } from "./context/UserContext";
+import { showToast } from "./utils/toast";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(true);
@@ -69,22 +70,68 @@ function App() {
     };
   
     useEffect(() => {
-      // Extract token from URL
-      const token = getQueryParams("token");
-      if (token) {
-        const [userName, userId] = token.split("$");
-        console.log("userName and userId", userName, userId)
-  
-        // Check if both values exist
-        if (userName && userId) {
-          // setUser({ userName, userId }); // Save to UserContext
-          console.log("userName", userName, "id", userId)
-          setIsAuthenticated(true); // Mark as authenticated
+      const fetchUserData = async () => {
+        // Extract token from URL
+        const token = getQueryParams("token");
+        console.log("Token found:", token);
+    
+        if (!token) {
+          console.log("No token found. Redirecting to login...");
+          setIsAuthenticated(false);
+          return;
         }
-      }else{
-        setIsAuthenticated(false);
-      }
-    }, []);
+    
+        const [userName, userId] = token.split("$");
+        console.log("Extracted User Name and ID:", userName, userId);
+    
+        // Validate extracted values
+        if (!userName || !userId) {
+          console.error("Invalid token format. Expected format: 'username$id'");
+          setIsAuthenticated(false);
+          return;
+        }
+    
+        try {
+          // Fetch user data from API
+          const userResponse = await fetch(
+            `https://silverexch24.com/users_api?UserName=${userName}`
+          );
+          const userData = await userResponse.json();
+          console.log("User Data API Response:", userData);
+    
+          if (userData.status === "success") {
+            setUser(userData); // Save user data to context
+            setIsAuthenticated(true);
+    
+            // Save uniqueId and username in localStorage
+            localStorage.setItem(
+              "verifyUser",
+              JSON.stringify({ username: userName, uniqueid: userId })
+            );
+    
+            // Save session data
+            const sessionData = {
+              user: userData,
+              expiry: Date.now() + 1 * 60 * 1000, // 1-minute expiry
+            };
+            sessionStorage.setItem("userSession", JSON.stringify(sessionData));
+    
+            console.log("User authenticated successfully.");
+          } else {
+            console.error("Failed to fetch user data. Invalid response.");
+            showToast("Failed to fetch user data.", "error");
+            setIsAuthenticated(false);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          showToast("Network error while fetching user data.", "error");
+          setIsAuthenticated(false);
+        }
+      };
+    
+      fetchUserData(); // Call the async function inside useEffect
+    }, []); // Run only once when the component mounts
+    
 
 
   useEffect(() => {
