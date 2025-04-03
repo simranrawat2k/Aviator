@@ -73,6 +73,7 @@ function App() {
       const token = getQueryParams("token");
       if (token) {
         const [userName, userId] = token.split("@");
+        console.log("userName and userId", userName, userId)
   
         // Check if both values exist
         if (userName && userId) {
