@@ -16,6 +16,10 @@ const Container = styled(Box)`
   @media (max-width: 1000px) {
     flex-direction: column;
   }
+
+  // @media (max-height: 600px) and (min-height: 500px) {
+  //   height: 130vh;
+  // }
 `;
 
 const Sidebar = styled(Box)`

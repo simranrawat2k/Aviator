@@ -202,7 +202,7 @@ const Header: React.FC<{ toggleAudio: () => void; isPlaying: boolean; onLogout: 
       </LeftSection>
       <RightSection>
         <BalanceContainer>
-          <span>{user?.UserName || "Guest"}</span>
+          <span>{user?.UserName || ""}</span>
           <BalanceBox>{amount.toFixed(2)}</BalanceBox>
           <span>INR</span>
         </BalanceContainer>
