@@ -71,7 +71,7 @@ function App() {
   
     useEffect(() => {
       const fetchUserData = async () => {
-        setLoading(true);
+       
         // Extract token from URL
         const token = getQueryParams("token");
         console.log("Token found:", token);
@@ -81,6 +81,8 @@ function App() {
           setIsAuthenticated(false);
           return;
         }
+
+        setLoading(true);
     
         const [userName, userId] = token.split("$");
         console.log("Extracted User Name and ID:", userName, userId);
