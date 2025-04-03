@@ -72,7 +72,7 @@ function App() {
       // Extract token from URL
       const token = getQueryParams("token");
       if (token) {
-        const [userName, userId] = token.split("@");
+        const [userName, userId] = token.split("$");
         console.log("userName and userId", userName, userId)
   
         // Check if both values exist
