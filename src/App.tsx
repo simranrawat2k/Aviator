@@ -16,6 +16,8 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); 
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
+  const [token, setToken] = useState<string | null>(null);
+
 
   const checkSession = () => {
     const sessionData = sessionStorage.getItem("userSession");
@@ -64,45 +66,29 @@ function App() {
 
   useEffect(() => {
     const receiveAuthToken = (event: MessageEvent) => {
-      console.log("event", event)
-      console.log("event.orgin", event.origin)
-        // SECURITY CHECK: Ensure message is from the correct origin
-        if (event.origin !== "https://fun-exchange.vercel.app/aviator") {
-            console.warn("Unauthorized message origin:", event.origin);
-            return;
-        }
-
-        const { token } = event.data;
-        console.log("token value", token)
-        // if (token) {
-        //     // Send the token to backend to validate and authenticate
-        //     fetch("https://secondwebsite.com/api/auth/validate", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //             "Authorization": Bearer ${token}
-        //         }
-        //     })
-        //     .then(res => res.json())
-        //     .then(data => {
-        //         if (data.success) {
-        //             window.location.href = "/dashboard"; // Redirect to dashboard
-        //         } else {
-        //             console.error("Token validation failed");
-        //         }
-        //     })
-        //     .catch(err => console.error("Auth error:", err));
-        // }
+      // SECURITY CHECK: Ensure message is from the correct origin
+      if (event.origin !== "https://fun-exchange.vercel.app") {
+        console.warn("Unauthorized message origin:", event.origin);
+        return;
+      }
+  
+      const { token } = event.data as { token?: string }; // Explicitly define expected data structure
+      if (token) {
+        console.log("Token received:", token);
+        setToken(token);
+      }
     };
-
+  
     // Listen for the message from the first website
     window.addEventListener("message", receiveAuthToken);
-
-    // Cleanup event listener on component unmount
+  
+    // Cleanup event listener on unmount
     return () => {
-        window.removeEventListener("message", receiveAuthToken);
+      window.removeEventListener("message", receiveAuthToken);
     };
-}, []);
+  }, []);
+  
+
 
 
   
