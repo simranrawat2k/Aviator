@@ -13,11 +13,10 @@ import { UserProvider, useUser } from "./context/UserContext";
 
 function App() {
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false); 
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setUser } = useUser();
   const [token, setToken] = useState<string | null>(null);
-
 
   const checkSession = () => {
     const sessionData = sessionStorage.getItem("userSession");
@@ -37,18 +36,18 @@ function App() {
   // useEffect(() => {
   //   const checkUserStatus = async () => {
   //     const storedUser = localStorage.getItem("verifyUser");
-  
+
   //     if (!storedUser) return;
-  
+
   //     const { username, uniqueid } = JSON.parse(storedUser);
-  
+
   //     try {
   //       const response = await fetch(
   //         `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
   //       );
   //       const data = await response.json();
   //       console.log("User Status Check:", data);
-  
+
   //       if (data.flag !== 0) {
   //         localStorage.removeItem("verifyUser");
   //         handleLogout();
@@ -57,41 +56,42 @@ function App() {
   //       console.error("Error checking user status:", error);
   //     }
   //   };
-  
+
   //   // Run check every 10 seconds
   //   const intervalId = setInterval(checkUserStatus, 10000);
-  
+
   //   return () => clearInterval(intervalId); // Cleanup interval on unmount
   // }, []);
 
   useEffect(() => {
     const receiveAuthToken = (event: MessageEvent) => {
-      // SECURITY CHECK: Ensure message is from the correct origin
+      console.log("📩 Message received:", event);
+      console.log("🌍 Event Origin:", event.origin);
+
+      // 🔍 Ensure message is coming from First Website
       if (event.origin !== "https://fun-exchange.vercel.app") {
-        console.warn("Unauthorized message origin:", event.origin);
+        console.warn("⚠ Unauthorized origin:", event.origin);
         return;
       }
-  
-      const { token } = event.data as { token?: string }; // Explicitly define expected data structure
-      if (token) {
-        console.log("Token received:", token);
-        setToken(token);
+
+      const receivedToken = event.data.token;
+      if (receivedToken) {
+        console.log("🔑 Received token:", receivedToken);
+        setToken(receivedToken);
+
+        // Store token in LocalStorage or Cookies
+        localStorage.setItem("accessToken", receivedToken);
       }
     };
-  
-    // Listen for the message from the first website
+
+    // ✅ Add Event Listener for Receiving Messages
     window.addEventListener("message", receiveAuthToken);
-  
-    // Cleanup event listener on unmount
+
     return () => {
+      // ❌ Cleanup Event Listener on Unmount
       window.removeEventListener("message", receiveAuthToken);
     };
   }, []);
-  
-
-
-
-  
 
   useEffect(() => {
     // Check session when app loads
@@ -114,7 +114,6 @@ function App() {
     setUser(null); // Reset user context
   };
 
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={3000} />
@@ -126,7 +125,11 @@ function App() {
             ) : isAuthenticated ? (
               <>
                 <AudioPlayer isPlaying={isPlaying} />
-                <Header toggleAudio={toggleAudio} isPlaying={isPlaying} onLogout={handleLogout}/>
+                <Header
+                  toggleAudio={toggleAudio}
+                  isPlaying={isPlaying}
+                  onLogout={handleLogout}
+                />
                 <Main />
               </>
             ) : (
