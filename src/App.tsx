@@ -32,35 +32,79 @@ function App() {
   };
 
   //call verify API after 10 seconds
+  // useEffect(() => {
+  //   const checkUserStatus = async () => {
+  //     const storedUser = localStorage.getItem("verifyUser");
+  
+  //     if (!storedUser) return;
+  
+  //     const { username, uniqueid } = JSON.parse(storedUser);
+  
+  //     try {
+  //       const response = await fetch(
+  //         `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
+  //       );
+  //       const data = await response.json();
+  //       console.log("User Status Check:", data);
+  
+  //       if (data.flag !== 0) {
+  //         localStorage.removeItem("verifyUser");
+  //         handleLogout();
+  //       }
+  //     } catch (error) {
+  //       console.error("Error checking user status:", error);
+  //     }
+  //   };
+  
+  //   // Run check every 10 seconds
+  //   const intervalId = setInterval(checkUserStatus, 10000);
+  
+  //   return () => clearInterval(intervalId); // Cleanup interval on unmount
+  // }, []);
+
   useEffect(() => {
-    const checkUserStatus = async () => {
-      const storedUser = localStorage.getItem("verifyUser");
-  
-      if (!storedUser) return;
-  
-      const { username, uniqueid } = JSON.parse(storedUser);
-  
-      try {
-        const response = await fetch(
-          `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
-        );
-        const data = await response.json();
-        console.log("User Status Check:", data);
-  
-        if (data.flag !== 0) {
-          localStorage.removeItem("verifyUser");
-          handleLogout();
+    const receiveAuthToken = (event: MessageEvent) => {
+      console.log("event", event)
+      console.log("event.orgin", event.origin)
+        // SECURITY CHECK: Ensure message is from the correct origin
+        if (event.origin !== "https://fun-exchange.vercel.app/aviator") {
+            console.warn("Unauthorized message origin:", event.origin);
+            return;
         }
-      } catch (error) {
-        console.error("Error checking user status:", error);
-      }
+
+        const { token } = event.data;
+        console.log("token value", token)
+        // if (token) {
+        //     // Send the token to backend to validate and authenticate
+        //     fetch("https://secondwebsite.com/api/auth/validate", {
+        //         method: "POST",
+        //         headers: {
+        //             "Content-Type": "application/json",
+        //             "Authorization": Bearer ${token}
+        //         }
+        //     })
+        //     .then(res => res.json())
+        //     .then(data => {
+        //         if (data.success) {
+        //             window.location.href = "/dashboard"; // Redirect to dashboard
+        //         } else {
+        //             console.error("Token validation failed");
+        //         }
+        //     })
+        //     .catch(err => console.error("Auth error:", err));
+        // }
     };
-  
-    // Run check every 10 seconds
-    const intervalId = setInterval(checkUserStatus, 10000);
-  
-    return () => clearInterval(intervalId); // Cleanup interval on unmount
-  }, []);
+
+    // Listen for the message from the first website
+    window.addEventListener("message", receiveAuthToken);
+
+    // Cleanup event listener on component unmount
+    return () => {
+        window.removeEventListener("message", receiveAuthToken);
+    };
+}, []);
+
+
   
 
   useEffect(() => {
