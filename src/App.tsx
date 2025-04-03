@@ -58,7 +58,7 @@ function App() {
     };
 
     // Run check every 10 seconds
-    const intervalId = setInterval(checkUserStatus, 10000);
+    const intervalId = setInterval(checkUserStatus, 5000);
 
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);

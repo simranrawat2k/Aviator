@@ -105,7 +105,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
     };
   
     // Fetch user data every 10 seconds
-    const intervalId = setInterval(fetchUserData, 10000);
+    const intervalId = setInterval(fetchUserData, 5000);
   
     return () => clearInterval(intervalId); // Cleanup interval on unmount
   }, []);
