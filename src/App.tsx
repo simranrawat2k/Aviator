@@ -71,6 +71,7 @@ function App() {
   
     useEffect(() => {
       const fetchUserData = async () => {
+        setLoading(true);
         // Extract token from URL
         const token = getQueryParams("token");
         console.log("Token found:", token);
@@ -126,6 +127,8 @@ function App() {
           console.error("Error fetching user data:", error);
           showToast("Network error while fetching user data.", "error");
           setIsAuthenticated(false);
+        }finally {
+          setLoading(false); // Hide loader after fetching (success or error)
         }
       };
     
