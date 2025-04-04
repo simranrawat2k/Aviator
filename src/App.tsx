@@ -46,7 +46,7 @@ function App() {
           `https://silverexch24.com/single_user_check_api?UserName=${username}&uniqueid=${uniqueid}`
         );
         const data = await response.json();
-        console.log("User Status Check:", data);
+        // console.log("User Status Check:", data);
 
         if (data.flag !== 0) {
           localStorage.removeItem("verifyUser");
@@ -85,7 +85,7 @@ function App() {
         setLoading(true);
     
         const [userName, userId] = token.split("$");
-        console.log("Extracted User Name and ID:", userName, userId);
+        // console.log("Extracted User Name and ID:", userName, userId);
     
         // Validate extracted values
         if (!userName || !userId) {

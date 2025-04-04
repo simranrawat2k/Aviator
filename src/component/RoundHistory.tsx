@@ -101,6 +101,8 @@ const RoundHistory: React.FC = () => {
     setShowAll((prev) => !prev);
   }
 
+  // .then((data: Round[]) => setRounds(data.reverse())) // <-- Reverse data if needed
+
   useEffect(() => {
     // Fetch initial data
     fetch("http://tonyexch.ap-south-1.elasticbeanstalk.com/api/round-history")

@@ -94,7 +94,7 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
           `https://silverexch24.com/users_api?UserName=${username}`
         );
         const data = await response.json();
-        console.log("User Data API Response:", data);
+        // console.log("User Data API Response:", data);
   
         if (data.status === "success") {
           setUser(data); // Always update the user, even if unchanged
