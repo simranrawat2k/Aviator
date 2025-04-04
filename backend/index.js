@@ -4,6 +4,7 @@ const http = require("http");
 const { Server } = require("ws");
 const path = require("path");
 const fs = require("fs");
+require('dotenv').config();
 const {
   router: betRoutes,
   calculateTotalBetAmount,
@@ -240,7 +241,8 @@ app.use("/api/cashout", cashoutRoutes);
 app.use("/api/currentCashout", currentCashout);
 
 // Start the backend server
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT;
+console.log(process.env.PORT,"PORTNAME")
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`WebSocket server started on ws://localhost:${PORT}`);

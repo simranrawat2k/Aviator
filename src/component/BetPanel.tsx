@@ -584,7 +584,7 @@ const BetPlane: React.FC = () => {
     console.log("Cashout JSON:", JSON.stringify(cashoutData));
 
     //Send currentCashout data to backend
-    fetch("http://localhost:8000/api/currentCashout", {
+    fetch("http://tonyexch.ap-south-1.elasticbeanstalk.com/api/currentCashout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cashoutData),
@@ -594,7 +594,7 @@ const BetPlane: React.FC = () => {
       .catch((err) => console.error("API Error:", err));
 
     // Send the cashout data to the backend
-    fetch("http://localhost:8000/api/cashout", {
+    fetch("http://tonyexch.ap-south-1.elasticbeanstalk.com/api/cashout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cashoutData),
@@ -652,7 +652,7 @@ const BetPlane: React.FC = () => {
         console.log("Bet Data:", JSON.stringify(betData));
 
         // Send data to backend
-        fetch("http://localhost:8000/api/bets", {
+        fetch("http://tonyexch.ap-south-1.elasticbeanstalk.com/api/bets", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(betData),
@@ -723,7 +723,7 @@ const BetPlane: React.FC = () => {
           console.log(JSON.stringify(cashoutData));
 
           // Send API request to /api/cashout
-          fetch("http://localhost:8000/api/cashout", {
+          fetch("http://tonyexch.ap-south-1.elasticbeanstalk.com/api/cashout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(cashoutData),
