@@ -101,15 +101,22 @@ const RoundHistory: React.FC = () => {
     setShowAll((prev) => !prev);
   }
 
+  // .then((data: Round[]) => setRounds(data.reverse())) // <-- Reverse data if needed
+
   useEffect(() => {
     // Fetch initial data
-    fetch("http://localhost:8000/api/round-history")
+    // fetch("http://localhost:8000/api/round-history")
+
+    fetch("https://tonyexch.com/api/round-history")
         .then((res) => res.json())
         .then((data: Round[]) => setRounds(data))
         .catch((err) => console.error("Error fetching round history:", err));
 
     // WebSocket Connection
-    const socket = new WebSocket("ws://localhost:8000");
+    // const socket = new WebSocket("ws://localhost:8000");
+
+    const socket = new WebSocket("wss://tonyexch.com/socket.io/?EIO=4&transport=websocket");
+
 
     socket.onmessage = (event) => {
         const gameState = JSON.parse(event.data);

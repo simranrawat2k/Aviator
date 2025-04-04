@@ -584,7 +584,9 @@ const BetPlane: React.FC = () => {
     console.log("Cashout JSON:", JSON.stringify(cashoutData));
 
     //Send currentCashout data to backend
-    fetch("http://localhost:8000/api/currentCashout", {
+    // fetch("http://localhost:8000/api/currentCashout", {
+
+    fetch("https://tonyexch.com/api/currentCashout",{
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cashoutData),
@@ -594,7 +596,9 @@ const BetPlane: React.FC = () => {
       .catch((err) => console.error("API Error:", err));
 
     // Send the cashout data to the backend
-    fetch("http://localhost:8000/api/cashout", {
+    // fetch("http://localhost:8000/api/cashout", {
+
+      fetch("https://tonyexch.com/api/cashout", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cashoutData),
@@ -652,7 +656,9 @@ const BetPlane: React.FC = () => {
         console.log("Bet Data:", JSON.stringify(betData));
 
         // Send data to backend
-        fetch("http://localhost:8000/api/bets", {
+        // fetch("http://localhost:8000/api/bets", {
+        
+          fetch("https://tonyexch.com/api/bets", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(betData),
@@ -723,7 +729,9 @@ const BetPlane: React.FC = () => {
           console.log(JSON.stringify(cashoutData));
 
           // Send API request to /api/cashout
-          fetch("http://localhost:8000/api/cashout", {
+          // fetch("http://localhost:8000/api/cashout", {
+
+            fetch("https://tonyexch.com/api/cashout", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(cashoutData),

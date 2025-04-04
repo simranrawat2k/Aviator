@@ -27,7 +27,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
  
 
   useEffect(() => {
-    const ws = new WebSocket("ws://localhost:8000");
+    // const ws = new WebSocket("ws://localhost:8000");
+    const ws = new WebSocket("wss://tonyexch.com/socket.io/?EIO=4&transport=websocket");
 
     ws.onopen = () => {
       console.log("Connected to WebSocket server");

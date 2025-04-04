@@ -17,7 +17,14 @@ const filePath = path.join(__dirname, "currentCashout.json");
 const socketIo = require("socket.io");
 
 const app = express();
-app.use(cors());
+// app.use(cors());
+
+app.use(cors({
+  origin: ["http://localhost:3000", "https://tonyexch.com"],
+  credentials: true
+}));
+
+
 
 app.use(express.json()); // Middleware to parse JSON body
 
@@ -25,7 +32,16 @@ const cashoutRoutes = require("./routes/cashout");
 
 const server = http.createServer(app);
 const wss = new Server({ server });
-const io = socketIo(server, { cors: { origin: "*" } }); // Initialize Socket.io
+// const io = socketIo(server, { cors: { origin: "*" } }); // Initialize Socket.io
+
+const io = socketIo(server, {
+  cors: {
+    origin: "https://tonyexch.com",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
 
 let gameState = {
   roundId: new Date().toISOString(), // Use time-based ID
@@ -240,8 +256,8 @@ app.use("/api/cashout", cashoutRoutes);
 app.use("/api/currentCashout", currentCashout);
 
 // Start the backend server
-const PORT = process.env.PORT || 8000;
-server.listen(PORT, () => {
+const PORT = 8000;
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
-  console.log(`WebSocket server started on ws://localhost:${PORT}`);
 });
+
